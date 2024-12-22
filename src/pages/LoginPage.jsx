@@ -10,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -40,11 +41,34 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    setLoading(true);
+    setError("");
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (response.ok) {
+        navigate("/home");
+      } else {
+        const data = await response.json();
+        setError(data.message || "Login failed");
+      }
+    } catch (error) {
+      setError("Login failed: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -53,7 +77,7 @@ const Login = () => {
           Login
         </h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleSubmit}>
+        <form >
           <div className="mb-4">
             <label htmlFor="email" className="block text-white">
               Email:
@@ -90,6 +114,7 @@ const Login = () => {
             </div>
           </div>
           <button
+            onClick = {handleLogin}
             type="submit"
             className="w-full p-2 bg-[#9B2D2D]  text-white rounded-md hover:bg-[#7A1F1F]"
           >

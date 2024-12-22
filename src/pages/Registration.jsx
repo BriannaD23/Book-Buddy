@@ -52,13 +52,13 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+  
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       setLoading(false);
       return;
     }
-
+  
     try {
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
@@ -67,12 +67,15 @@ const Register = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       if (response.ok) {
-        navigate("/home"); 
+        // If response is OK, navigate to home
+        navigate("/home");
       } else {
-        const data = await response.json();
-        setError(data.message || "Registration failed");
+        // Log the error if the response is not OK
+        const text = await response.text(); // Get the raw response as text
+        console.error("Error Response Text:", text);
+        setError("Registration failed: " + text); // Set error with the raw response
       }
     } catch (error) {
       setError("Registration failed: " + error.message);
@@ -80,7 +83,9 @@ const Register = () => {
       setLoading(false);
     }
   };
-
+  
+  
+ 
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="register-container bg-black bg-opacity-50 p-8 rounded-lg shadow-lg w-full max-w-md">
