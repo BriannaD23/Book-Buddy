@@ -5,12 +5,14 @@ import HomePage from "./pages/HomePage.jsx";
 import MyLibraryPage from "./pages/MyLibraryPage.jsx"
 import DiscoverPage from "./pages/DiscoverPage.jsx";
 import RegistrationPage from "./pages/Registration.jsx";
+import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginPage />,
+    element:<LoginPage />,
   },
   {
     path: "/registration",
@@ -18,9 +20,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/home",
-    element: <HomePage />,
-  },
-  {
+    element:
+    <>
+      <Header/>
+      <HomePage />,
+      <Footer/>
+   </>
+  }, 
+ 
+ {
     path: "/mylibrary",
     element: <MyLibraryPage/>,
   },
@@ -28,6 +36,9 @@ const router = createBrowserRouter([
     path: "/discoverpage",
     element: <DiscoverPage />,
   },
+// /------------------Componets------------------------/ 
+ 
+
 
 ]);
 

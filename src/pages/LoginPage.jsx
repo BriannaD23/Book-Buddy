@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import googleIcon from "../assets/images/google-icon.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import "../styles/Loginpage.css";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -69,10 +71,10 @@ const Login = () => {
     }
   };
   
-
+  
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="login-container bg-black bg-opacity-50 p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="flex page-container items-center justify-center min-h-screen px-4 sm:px-6 md:px-8">
+      <div className="login-container bg-black bg-opacity-50 lg:bg-opacity-70 p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md  md:max-w-lg max-w-md">
         <h1 className="text-2xl text-white font-bold mb-4 text-center">
           Login
         </h1>

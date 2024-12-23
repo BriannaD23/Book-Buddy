@@ -69,10 +69,8 @@ const Register = () => {
       });
   
       if (response.ok) {
-        // If response is OK, navigate to home
         navigate("/home");
       } else {
-        // Log the error if the response is not OK
         const text = await response.text(); // Get the raw response as text
         console.error("Error Response Text:", text);
         setError("Registration failed: " + text); // Set error with the raw response
@@ -87,8 +85,8 @@ const Register = () => {
   
  
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="register-container bg-black bg-opacity-50 p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="flex items-center page-container justify-center min-h-screen px-4 sm:px-6 md:px-8">
+      <div className="register-container  bg-black bg-opacity-50 lg:bg-opacity-65 p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md  md:max-w-lg max-w-md">
         <h1 className="text-2xl text-white font-bold mb-4 text-center">
           Register
         </h1>
