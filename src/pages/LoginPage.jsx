@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Loginpage.css";
 
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +32,7 @@ const Login = () => {
       });
 
       if (response.ok) {
-        navigate("/home"); 
+        navigate("/logedin-home");
       } else {
         setError("Authentication failed");
       }
@@ -43,12 +42,11 @@ const Login = () => {
     }
   };
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-  
+
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -57,9 +55,9 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
-        navigate("/home");
+        navigate("/logedin-home");
       } else {
         const data = await response.json();
         setError(data.message || "Login failed");
@@ -70,8 +68,7 @@ const Login = () => {
       setLoading(false);
     }
   };
-  
-  
+
   return (
     <div className="flex page-container items-center justify-center min-h-screen px-4 sm:px-6 md:px-8">
       <div className="login-container bg-black bg-opacity-50 lg:bg-opacity-70 p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md  md:max-w-lg max-w-md">
@@ -79,7 +76,7 @@ const Login = () => {
           Login
         </h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form >
+        <form>
           <div className="mb-4">
             <label htmlFor="email" className="block text-white">
               Email:
@@ -116,7 +113,7 @@ const Login = () => {
             </div>
           </div>
           <button
-            onClick = {handleLogin}
+            onClick={handleLogin}
             type="submit"
             className="w-full p-2 bg-[#9B2D2D]  text-white rounded-md hover:bg-[#7A1F1F]"
           >
@@ -136,6 +133,14 @@ const Login = () => {
               className="text-yellow-500 hover:text-yellow-600"
             >
               Register here
+            </a>
+          </p>
+          <p className="text-center mt-6">
+            <a
+              href="/home"
+              className="text-white text-sm underline hover:text-yellow-500"
+            >
+              Continue as Guest
             </a>
           </p>
         </form>

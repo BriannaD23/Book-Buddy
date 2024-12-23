@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import BookList from "../components/Booklist.jsx";
-import HomeLayout from "../components/HomeLayout.jsx";
+import LogInLayout from "../components/LogInLayout.jsx";
 
-const Home = () => {
+const LoginHome = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,9 +47,9 @@ const Home = () => {
   };
 
   return (
-    <HomeLayout searchQuery={searchQuery} handleSearchChange={handleSearchChange}>
+    <LogInLayout searchQuery={searchQuery} handleSearchChange={handleSearchChange}>
       <div className="mt-8">
-        <h1 className="text-2xl text-[#A83D3D] mb-4 text-center">
+        <h1 className="text-[#A83D3D] text-2xl  mb-4 text-center">
           Recommended Books
         </h1>
 
@@ -82,13 +82,11 @@ const Home = () => {
           </div>
         )}
       </div>
-     
-    </HomeLayout>
+    </LogInLayout>
   );
 };
 
-export default Home;
-
+export default LoginHome;
 
 
 // import React, { useEffect, useState } from "react";
@@ -96,14 +94,13 @@ export default Home;
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
-// const Home = () => {
+// const LoginHome = () => {
 //   const [books, setBooks] = useState([]);
 //   const [loading, setLoading] = useState(true);
 //   const [searchQuery, setSearchQuery] = useState(""); 
 //   const [startIndex, setStartIndex] = useState(0);
 //   const [totalItems, setTotalItems] = useState(0);
 //   const resultsPerPage = 16; 
-
 //   const defaultCategory = "Fiction"; 
 
 //   const fetchBooks = async () => {
@@ -123,19 +120,16 @@ export default Home;
 //     }
 //   };
 
-//   // Trigger fetchBooks when the component mounts or searchQuery/startIndex changes
 //   useEffect(() => {
 //     setBooks([]); 
 //     fetchBooks();
 //   }, [searchQuery, startIndex]);
 
-//   // Handle search input change
 //   const handleSearchChange = (event) => {
 //     setSearchQuery(event.target.value);
 //     setStartIndex(0); 
 //   };
 
-//   // Handle pagination (Next and Previous)
 //   const handleNextPage = () => {
 //     setStartIndex(startIndex + resultsPerPage);
 //   };
@@ -144,56 +138,46 @@ export default Home;
 //     setStartIndex(Math.max(startIndex - resultsPerPage, 0)); // Prevent going negative
 //   };
 
-
 //   return (
 //     <div>
 //       <main>
-//           <div className="h-144">
-//             <div
-//               className="hm-page-container h-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
-//               style={{
-//                 backgroundImage:
-//                   "url('https://i.postimg.cc/pLCywZfz/pexels-pixabay-159711.jpg')",
-//               }}
-//             >
-//               <div className="text-center text-white p-8">
-//                 <h2 className="text-[55px] text-shadow-outline">
-//                   Find your next read!
-//                 </h2>
-
-//                 <div className="relative mt-4 w-80 mx-auto">
-//                   <div className="flex items-center border border-gray-300 rounded-md  ">
-//                     <input
-//                       type="text"
-//                       placeholder="Search for books..."
-//                       className="p-2 flex-grow text-black rounded-md pr-10"
-//                       value={searchQuery}
-//                       onChange={handleSearchChange}
-//                     />
-//                     <FontAwesomeIcon
-//                       icon={faMagnifyingGlass}
-//                       className="text-gray-800 text-xl absolute right-3 pointer-events-none"
-//                     />
-//                   </div>
+//         <div className="h-144">
+//           <div
+//             className="hm-page-container h-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
+//             style={{
+//               backgroundImage:
+//                 "url('https://i.postimg.cc/pLCywZfz/pexels-pixabay-159711.jpg')",
+//             }}
+//           >
+//             <div className="text-center text-white p-8">
+//               <h2 className="text-[55px] text-shadow-outline">
+//                 Find your next read!
+//               </h2>
+//               <div className="relative mt-4 w-80 mx-auto">
+//                 <div className="flex items-center border border-gray-300 rounded-md  ">
+//                   <input
+//                     type="text"
+//                     placeholder="Search for books..."
+//                     className="p-2 flex-grow text-black rounded-md pr-10"
+//                     value={searchQuery}
+//                     onChange={handleSearchChange}
+//                   />
+//                   <FontAwesomeIcon
+//                     icon={faMagnifyingGlass}
+//                     className="text-gray-800 text-xl absolute right-3 pointer-events-none"
+//                   />
 //                 </div>
-
-//                 <p className="text-[17px] mt-16 text-shadow-outline px-4 py-3 bg-black bg-opacity-50 rounded">
-//                   <a className="text-[#EAD298]"  a href="/">Sign up</a> or <a className="text-[#EAD298]" href="/registration"> Log in </a>to access all features and join our
-//                   community!
-//                 </p>
-
-                
 //               </div>
 //             </div>
 //           </div>
+//         </div>
 
-//         {/* Recommended Books Section (always visible) */}
+//         {/* Recommended Books Section */}
 //         <div className="mt-8">
 //           <h1 className="text-2xl text-white mb-4 text-center">
 //             Recommended Books
 //           </h1>
 
-//           {/* Show loading or books */}
 //           {loading ? (
 //             <p className="text-white text-center">Loading...</p>
 //           ) : books.length > 0 ? (
@@ -224,9 +208,11 @@ export default Home;
 //             </div>
 //           )}
 //         </div>
+
+        
 //       </main>
 //     </div>
 //   );
 // };
 
-// export default Home;
+// export default LoginHome;
