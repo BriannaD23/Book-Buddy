@@ -60,7 +60,7 @@ const BookList = ({ books }) => {
           {/* Detailed Info Block */}
           {selectedBookId === book.id && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4 pointer-events-auto">
-              <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 flex flex-col sm:flex-row items-center relative max-w-3xl mx-auto max-h-full overflow-y-auto">
+              <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 flex flex-col sm:flex-row items-center relative max-w-3xl mx-auto">
                 <img
                   src={
                     book.volumeInfo.imageLinks?.thumbnail ||
