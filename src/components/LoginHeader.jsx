@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import Logo from "../assets/images/bookbuddy.png";
-import Usericon from "../assets/images/user.png"; // Import the default user icon
+import Usericon from "../assets/images/user.png"; 
 
 const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Function to toggle the dropdown menu
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-  // Handle logout
   const handleLogout = () => {
     if (onLogout) {
       onLogout();
@@ -54,7 +52,7 @@ const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
             </Link>
           </li>
           <li>
-            <Link to="/discover" className="hover:text-yellow-400">
+            <Link to="/discoverpage" className="hover:text-yellow-400">
               Discover
             </Link>
           </li>
