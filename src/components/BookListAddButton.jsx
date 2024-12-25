@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const BookList = ({ books }) => {
+const BookListWithAddButton = ({ books, fetchBooks }) => {
   const [selectedBookId, setSelectedBookId] = useState(null);
 
   const handleBookClick = (id) => {
@@ -8,6 +9,43 @@ const BookList = ({ books }) => {
       setSelectedBookId(null); // Deselect if already selected
     } else {
       setSelectedBookId(id); // Select the book
+    }
+  };
+
+  const handleAddBook = async (book) => {
+    const userId = "user-id-placeholder"; // Replace with actual user ID
+    const token = "token-placeholder"; // Replace with actual token
+
+    if (!userId || !token) {
+      console.error("User ID or Token is not available");
+      return;
+    }
+
+    // Log the book data before making the request
+    console.log("Book data to be added:", {
+      userId: userId, 
+      coverImage: book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
+      title: book.volumeInfo.title,
+      authors: book.volumeInfo.authors || ["Unknown Author"],
+      description: book.volumeInfo.description || "No description available",
+    });
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/books", {
+        userId: userId,
+        coverImage: book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
+        title: book.volumeInfo.title,
+        authors: book.volumeInfo.authors || ["Unknown Author"],
+        description: book.volumeInfo.description || "No description available",
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}` // Send token with the request
+        }
+      });
+      console.log("Book added successfully:", response.data);
+      fetchBooks(); // Refresh the book list
+    } catch (error) {
+      console.error("Error adding book:", error);
     }
   };
 
@@ -84,10 +122,18 @@ const BookList = ({ books }) => {
                       : "No description available"}
                   </div>
 
+                  {/* Add to Library Button */}
+                  <button
+                    onClick={() => handleAddBook(book)}
+                    className="mt-4 px-4 py-2 bg-[#9B2D2D] text-white rounded-lg hover:bg-[#7A1F1F]"
+                  >
+                    Add to Library
+                  </button>
+
                   {/* Close Button */}
                   <button
                     onClick={() => setSelectedBookId(null)}
-                    className="absolute top-2 right-2 text-sm text-blue-500 underline"
+                    className="absolute top-2 right-2 text-sm text-[#9B2D2D] underline"
                   >
                     Close
                   </button>
@@ -101,4 +147,4 @@ const BookList = ({ books }) => {
   );
 };
 
-export default BookList;
+export default BookListWithAddButton;

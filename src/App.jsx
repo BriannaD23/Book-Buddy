@@ -41,11 +41,25 @@ const router = createBrowserRouter([
   },
   {
     path: "/mylibrary",
-    element: <MyLibraryPage />,
+    element:( 
+    <> 
+    <LoginHeader />
+    <MyLibraryPage />
+    </>
+  
+    
+    )
   },
   {
     path: "/discoverpage",
-    element: <DiscoverPage />,
+    element: 
+    <>
+    (
+      <Header />
+      <DiscoverPage />,
+      <Footer />
+    )
+    </>
   },
 ]);
 

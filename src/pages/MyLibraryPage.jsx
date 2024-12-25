@@ -1,6 +1,6 @@
 
-const Library = () => {
-    return <h1>Discover Page</h1>;
+const MyLibrary = () => {
+    return <h1> My Books</h1>;
   };
   
-  export default Library;
+  export default MyLibrary;

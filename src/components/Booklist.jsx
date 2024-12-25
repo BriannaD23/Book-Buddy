@@ -87,7 +87,7 @@ const BookList = ({ books }) => {
                   {/* Close Button */}
                   <button
                     onClick={() => setSelectedBookId(null)}
-                    className="absolute top-2 right-2 text-sm text-blue-500 underline"
+                    className="absolute top-2 right-2 text-sm text-[#9B2D2D]  underline"
                   >
                     Close
                   </button>
