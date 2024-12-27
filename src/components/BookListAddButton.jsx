@@ -1,52 +1,18 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const BookListWithAddButton = ({ books, fetchBooks }) => {
   const [selectedBookId, setSelectedBookId] = useState(null);
 
   const handleBookClick = (id) => {
     if (selectedBookId === id) {
-      setSelectedBookId(null); // Deselect if already selected
+      setSelectedBookId(null); 
     } else {
-      setSelectedBookId(id); // Select the book
+      setSelectedBookId(id); 
     }
   };
 
-  const handleAddBook = async (book) => {
-    const userId = "user-id-placeholder"; // Replace with actual user ID
-    const token = "token-placeholder"; // Replace with actual token
-
-    if (!userId || !token) {
-      console.error("User ID or Token is not available");
-      return;
-    }
-
-    // Log the book data before making the request
-    console.log("Book data to be added:", {
-      userId: userId, 
-      coverImage: book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
-      title: book.volumeInfo.title,
-      authors: book.volumeInfo.authors || ["Unknown Author"],
-      description: book.volumeInfo.description || "No description available",
-    });
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/books", {
-        userId: userId,
-        coverImage: book.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
-        title: book.volumeInfo.title,
-        authors: book.volumeInfo.authors || ["Unknown Author"],
-        description: book.volumeInfo.description || "No description available",
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}` // Send token with the request
-        }
-      });
-      console.log("Book added successfully:", response.data);
-      fetchBooks(); // Refresh the book list
-    } catch (error) {
-      console.error("Error adding book:", error);
-    }
+  const handleAddBook = async () => {
+   
   };
 
   return (
