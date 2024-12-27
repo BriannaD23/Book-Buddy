@@ -32,6 +32,8 @@ const Login = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
         navigate("/logedin-home");
       } else {
         setError("Authentication failed");
@@ -57,6 +59,8 @@ const Login = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
         navigate("/logedin-home");
       } else {
         const data = await response.json();
