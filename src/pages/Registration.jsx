@@ -37,7 +37,7 @@ const Register = () => {
       });
 
       if (response.ok) {
-        navigate("/home");
+        navigate("/");
       } else {
         setError("Google registration failed");
       }
