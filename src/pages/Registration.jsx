@@ -71,9 +71,9 @@ const Register = () => {
       if (response.ok) {
         navigate("/home");
       } else {
-        const text = await response.text(); // Get the raw response as text
+        const text = await response.text(); 
         console.error("Error Response Text:", text);
-        setError("Registration failed: " + text); // Set error with the raw response
+        setError("Registration failed: " + text); 
       }
     } catch (error) {
       setError("Registration failed: " + error.message);

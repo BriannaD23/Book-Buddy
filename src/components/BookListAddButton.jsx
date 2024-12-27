@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 
-const BookList = ({ books }) => {
+const BookListWithAddButton = ({ books, fetchBooks }) => {
   const [selectedBookId, setSelectedBookId] = useState(null);
 
   const handleBookClick = (id) => {
     if (selectedBookId === id) {
-      setSelectedBookId(null); // Deselect if already selected
+      setSelectedBookId(null); 
     } else {
-      setSelectedBookId(id); // Select the book
+      setSelectedBookId(id); 
     }
+  };
+
+  const handleAddBook = async () => {
+   
   };
 
   return (
@@ -84,10 +88,18 @@ const BookList = ({ books }) => {
                       : "No description available"}
                   </div>
 
+                  {/* Add to Library Button */}
+                  <button
+                    onClick={() => handleAddBook(book)}
+                    className="mt-4 px-4 py-2 bg-[#9B2D2D] text-white rounded-lg hover:bg-[#7A1F1F]"
+                  >
+                    Add to Library
+                  </button>
+
                   {/* Close Button */}
                   <button
                     onClick={() => setSelectedBookId(null)}
-                    className="absolute top-2 right-2 text-sm text-blue-500 underline"
+                    className="absolute top-2 right-2 text-sm text-[#9B2D2D] underline"
                   >
                     Close
                   </button>
@@ -101,4 +113,4 @@ const BookList = ({ books }) => {
   );
 };
 
-export default BookList;
+export default BookListWithAddButton;
