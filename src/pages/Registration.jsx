@@ -69,7 +69,7 @@ const Register = () => {
       });
   
       if (response.ok) {
-        navigate("/home");
+        navigate("/");
       } else {
         const text = await response.text(); 
         console.error("Error Response Text:", text);
