@@ -29,7 +29,7 @@ const LoginHome = () => {
   };
 
   useEffect(() => {
-    setBooks([]);
+    setBooks([]);  
     fetchBooks();
   }, [searchQuery, startIndex]);
 
