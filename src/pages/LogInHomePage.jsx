@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import BookListAddbtn from "../components/BookListAddButton.jsx";
 import LogInLayout from "../components/LogInLayout.jsx";
+import dotenv from "dotenv";
+
 
 const LoginHome = () => {
   const [books, setBooks] = useState([]);
@@ -14,9 +16,10 @@ const LoginHome = () => {
   const fetchBooks = async () => {
     setLoading(true);
     const query = searchQuery || defaultCategory;
+    const apiKey = import.meta.env.VITE_API_KEY;
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${resultsPerPage}&orderBy=relevance`
+        `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${resultsPerPage}&orderBy=relevance&key=${apiKey}`
       );
       const data = await response.json();
       setBooks(data.items || []);
