@@ -65,7 +65,6 @@ export const addBookToLibrary = async (bookId) => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          bookId,
           title,
           author,
           coverImage,

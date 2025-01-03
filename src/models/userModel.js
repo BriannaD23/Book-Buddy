@@ -6,9 +6,9 @@ const userSchema = new mongoose.Schema({
   firebaseUid: { type: String, required: false },
   library: [
     {
-      title: { type: String },
-      author: { type: String, required: true },
-      coverImage: { type: String },
+      title: {type: String},
+      author:{ type: String, required: true },
+      coverImage:{ type: String },
     }
   ],
 });
