@@ -25,15 +25,12 @@ export const getLibrary = async (req, res) => {
 export const addBookToLibrary = async (req, res) => {
     try {
       const userId = req.params.userId;
-      const { title, author, coverImage } = req.body;
+      const { coverImage } = req.body;
   
-      console.log("Received title:", title);
-      console.log("Received author:", author);
+    
       console.log("Received coverImage:", coverImage);
   
-      if (!title || !author) {
-        return res.status(400).json({ message: "Title and author are required" });
-      }
+    
   
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ message: "Invalid User ID" });
@@ -45,14 +42,8 @@ export const addBookToLibrary = async (req, res) => {
       }
   
       const newBook = { 
-        title, 
-        author, 
         coverImage };
   
-      const bookExists = user.library.some(book => book.title === title);
-      if (bookExists) {
-        return res.status(400).json({ message: "Book already in the library" });
-      }
   
       user.library.push(newBook);
   

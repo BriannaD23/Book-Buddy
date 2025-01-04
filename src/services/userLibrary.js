@@ -18,20 +18,10 @@ const fetchBookDetailsFromGoogle = async (bookId) => {
 
     console.log("volumeInfo:", volumeInfo); 
 
-    if (
-      !volumeInfo ||
-      !volumeInfo.title ||
-      !volumeInfo.authors ||
-      volumeInfo.authors.length === 0
-    ) {
-      throw new Error("Missing title or author in book details");
-    }
 
-    const title = volumeInfo.title;
-    const author = volumeInfo.authors[0];
     const coverImage = volumeInfo.imageLinks?.thumbnail || null;
 
-    return { title, author, coverImage };
+    return {coverImage };
   } catch (error) {
     console.error(
       "Error fetching book details from Google Books API:",
@@ -44,8 +34,8 @@ const fetchBookDetailsFromGoogle = async (bookId) => {
 export const addBookToLibrary = async (bookId) => {
     try {
       console.log("Fetching book details for bookId:", bookId);
-      const { title, author, coverImage } = await fetchBookDetailsFromGoogle(bookId);
-      console.log("Fetched book details:", { title, author, coverImage });
+      const {coverImage } = await fetchBookDetailsFromGoogle(bookId);
+      console.log("Fetched book details:", { coverImage });
   
       const decodedPayload = decodeTokenPayload();
   
@@ -56,7 +46,7 @@ export const addBookToLibrary = async (bookId) => {
       const { userId, token } = decodedPayload;
   
       // Log the data being sent
-      console.log("Sending data to backend:", { title, author, coverImage });
+      console.log("Sending data to backend:", {coverImage });
   
       const response = await fetch(`${API_URL}/${userId}/library`, {
         method: "POST",
@@ -65,8 +55,6 @@ export const addBookToLibrary = async (bookId) => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title,
-          author,
           coverImage,
         }),
       });
