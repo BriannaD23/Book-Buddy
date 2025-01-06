@@ -4,7 +4,7 @@ const Footer = () => {
     return (
   
     
-      <footer className=" bg-[#EAD298]   text-[#A83D3D]  py-6">
+      <footer className=" bg-[#EAD298]   text-[#A83D3D] mt-20 py-6">
         <div className="container mx-auto flex flex-wrap justify-between">
           {/* Section for app info */}
           <div className="w-full sm:w-1/3 mb-4 sm:mb-0">
@@ -12,7 +12,6 @@ const Footer = () => {
             <p className="text-sm mt-2">Your Personal Book Recommendation App</p>
           </div>
   
-          {/* Section for links */}
           <div className="w-full sm:w-1/3 mb-4 sm:mb-0">
             <h3 className="text-xl font-semibold">Quick Links</h3>
             <ul className="text-sm">

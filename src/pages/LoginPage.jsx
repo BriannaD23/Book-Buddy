@@ -7,6 +7,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "../styles/Loginpage.css";
 
+const setCookie = (name, value) => {
+  const expires = new Date();
+  expires.setHours(expires.getHours() + 24);  
+  document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
+};
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +38,8 @@ const Login = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        setCookie('token', data.token);  
         navigate("/logedin-home");
       } else {
         setError("Authentication failed");
@@ -57,6 +65,8 @@ const Login = () => {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        setCookie('token', data.token);  
         navigate("/logedin-home");
       } else {
         const data = await response.json();

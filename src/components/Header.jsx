@@ -10,17 +10,17 @@ const Header = ({ isLoggedIn }) => {
         {isLoggedIn ? (
           <ul className="flex gap-4">
             <li>
-              <Link to="/dashboard" className="hover:text-yellow-400">
+              <Link to="/dashboard" className= "hover:text-[#9B2D2D]">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="hover:text-yellow-400">
+              <Link to="/profile" className= "hover:text-[#9B2D2D]">
                 Profile
               </Link>
             </li>
             <li>
-              <Link to="/logout" className="hover:text-yellow-400">
+              <Link to="/logout" className= "hover:text-[#9B2D2D]">
                 Logout
               </Link>
             </li>

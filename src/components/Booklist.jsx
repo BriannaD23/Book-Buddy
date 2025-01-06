@@ -12,7 +12,7 @@ const BookList = ({ books }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 p-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4  gap-8 p-6">
       {books.map((book) => (
         <div
           key={book.id}
