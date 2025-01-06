@@ -73,7 +73,6 @@ export const addBookToLibrary = async (bookId) => {
   };
   
 
-// Get the user's library
 export const getLibrary = async () => {
   try {
     const decodedPayload = decodeTokenPayload();

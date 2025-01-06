@@ -47,12 +47,12 @@ const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
       <nav className="flex items-center">
         <ul className="flex gap-4">
           <li>
-            <Link to="/mylibrary" className="hover:text-yellow-400">
+            <Link to="/mylibrary" className= "hover:text-[#9B2D2D]">
               My Books
             </Link>
           </li>
           <li>
-            <Link to="/discoverpage" className="hover:text-yellow-400">
+            <Link to="/discoverpage" className= "hover:text-[#9B2D2D]">
               Discover
             </Link>
           </li>
@@ -66,7 +66,7 @@ const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
             />
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-4 bg-white text-black rounded shadow-lg w-40">
+            <div className="absolute right-0 mt-5 bg-white text-black rounded shadow-lg w-40">
               <ul>
                 <li>
                   <label className="block px-4 py-2 text-sm hover:bg-gray-200 cursor-pointer">
