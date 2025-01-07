@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import Logo from "../assets/images/bookbuddy.png";
-import Usericon from "../assets/images/user.png"; 
+import Usericon from "../assets/images/user.png";
 
 const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -21,38 +21,47 @@ const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
     if (!file) return;
 
     const formData = new FormData();
-    formData.append('profilePicture', file);
+    formData.append("profilePicture", file);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/uploadProfilePicture', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/uploadProfilePicture",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       // Update the user's photoURL in the frontend
       if (response.data.user) {
         updateUser(response.data.user);
       }
     } catch (error) {
-      console.error('Error uploading profile picture:', error);
+      console.error("Error uploading profile picture:", error);
     }
   };
 
   return (
     <header className="bg-[#EAD298] text-white p-4 flex justify-between items-center">
-      <Link to = "/logedin-home">
-      <img src={Logo} className="h-9" alt="book-logo" />
+      <Link to="/logedin-home">
+        <img src={Logo} className="h-9" alt="book-logo" />
       </Link>
       <nav className="flex items-center">
-        <ul className="flex gap-4">
+        <ul className="flex gap-6">
           <li>
-            <Link to="/mylibrary" className= "hover:text-[#9B2D2D]">
+            <Link to= "/logedin-home" className="hover:text-[#9B2D2D]">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/mylibrary" className="hover:text-[#9B2D2D]">
               My Books
             </Link>
           </li>
           <li>
-            <Link to="/discoverpage" className= "hover:text-[#9B2D2D]">
+            <Link to="/discoverpage" className="hover:text-[#9B2D2D]">
               Discover
             </Link>
           </li>
@@ -60,7 +69,7 @@ const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
         <div className="relative ml-4">
           <button onClick={toggleDropdown} className="flex items-center gap-2">
             <img
-              src={user?.photoURL || Usericon} 
+              src={user?.photoURL || Usericon}
               alt="Profile"
               className="w-8 h-8 rounded-full object-cover"
             />
