@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema({
     pending: [
       {
         coverImage: { type: String },
+        bookId: { type: String, required: true },
       },
     ],
     completed: {

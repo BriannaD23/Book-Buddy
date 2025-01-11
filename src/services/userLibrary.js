@@ -88,7 +88,6 @@ export const getLibrary = async () => {
     console.log("Starting getLibrary function");
 
     const decodedPayload = decodeTokenPayload();
-    console.log("Decoded token payload:", decodedPayload);
 
     if (!decodedPayload?.userId) {
       throw new Error("No userId found in the token");
@@ -127,8 +126,9 @@ export const getLibrary = async () => {
   }
 };
 
-export const addBookToPending = async (bookCover) => {
+export const addBookToPending = async (bookId, bookCover) => {
   try {
+
     const decodedPayload = decodeTokenPayload();
 
     if (!decodedPayload?.userId) {
@@ -137,29 +137,32 @@ export const addBookToPending = async (bookCover) => {
 
     const { userId, token } = decodedPayload;
 
-    const newPendingBook = { bookCover }; // Send bookCover instead of bookId
+    const pendingBook = {
+      bookId,
+      bookCover,
+    };
+    console.log("Prepared pendingBook payload:", pendingBook);
 
-    console.log("Sending data to backend:", { newPendingBook });
-
-    const response = await fetch(`${API_URL}/${userId}/library/pendingBooks`, {
+    // Post the book to the user's pending list
+    const response = await fetch(`${API_URL}/${userId}/library/pending`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(newPendingBook),
+      body: JSON.stringify(pendingBook),
     });
 
+    console.log("Add to Pending API response status:", response.status);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Add to Pending Error Response:", errorData);
-      throw new Error(
-        errorData.message || "Failed to add the book to pending."
-      );
+      const errorText = await response.text();
+      throw new Error(`Failed to add book to pending: ${errorText}`);
     }
 
     const data = await response.json();
-    console.log("Book added to pending:", data);
+    console.log("Book successfully added to pending list:", data);
+
     return data;
   } catch (error) {
     console.error("Error adding book to pending:", error.message);

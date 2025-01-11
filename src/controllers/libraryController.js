@@ -57,6 +57,7 @@
 import mongoose from "mongoose";
 import User from "../models/userModel.js";
 
+
 export const addBookToLibrary = async (req, res) => {
     try {
       const userId = req.params.userId;
@@ -119,4 +120,37 @@ export const addBookToLibrary = async (req, res) => {
       return res.status(500).json({ message: "Error retrieving library", error: error.message });
     }
   };
+
+  export const addBookToPending = async (req, res) => {
+    try {
+      const { bookId, bookCover } = req.body;
+      const userId = req.user.id; // Assuming `req.user` is populated by authentication middleware
+  
+      console.log("Adding book to pending list:", {  bookId, bookCover });
+  
+      if (!bookId || !bookCover) {
+        return res.status(400).json({ message: "Book ID and cover are required." });
+      }
+  
+      // Simulate adding the book to the pending list
+      const pendingBook = {
+        bookId,
+        bookCover,
+
+      };
+  
+      console.log("Book added to pending:", pendingBook);
+  
+      // Respond with success
+      res.status(200).json({
+        message: "Book successfully added to pending list.",
+        pendingBook,
+      });
+    } catch (error) {
+      console.error("Error adding book to pending:", error.message);
+      res.status(500).json({ message: "Failed to add book to pending list.", error: error.message });
+    }
+  };
+  
+  
   
