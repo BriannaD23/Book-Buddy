@@ -1,6 +1,6 @@
 
 import express from 'express';
-import {getLibrary, addBookToLibrary,addBookToPending } from '../controllers/libraryController.js';  // Import controller functions
+import {getLibrary, addBookToLibrary,addBookToPending, getPendingBooks } from '../controllers/libraryController.js';  // Import controller functions
 
 const router = express.Router();
 
@@ -14,12 +14,8 @@ router.post('/:userId/library/mybooks', addBookToLibrary);
 router.post('/:userId/library/pending', addBookToPending);
 
 
-// // Route to get the user's pending books
-// router.get('/:userId/library/pending', getPendingBooks);
+router.get('/:userId/library/pending', getPendingBooks);
 
-
-// Route to add a book to 'pending' section
-// router.post('/:userId/library/pending', addBookToPending);
 
 
 // // Route to get the user's current books

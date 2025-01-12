@@ -66,47 +66,98 @@ export const addBookToLibrary = async (req, res) => {
   };
  
 // ------------------------Pending Books------------------------//
+  // export const addBookToPending = async (req, res) => {
+  //   try {
+  //     const userId = req.params.userId;
+  //     const { bookId, bookCover } = req.body;
+  
+  //     // Validate userId as a valid MongoDB ObjectId
+  //     if (!mongoose.Types.ObjectId.isValid(userId)) {
+  //       return res.status(400).json({ message: "Invalid User ID" });
+  //     }
+  
+  //     // Find the user in the database
+  //     const user = await User.findById(userId);
+  //     if (!user) {
+  //       return res.status(404).json({ message: "User not found" });
+  //     }
+  
+  //     // Validate the bookId and bookCover
+  //     if (!bookId || !bookCover) {
+  //       return res.status(400).json({ message: "Book ID and cover are required." });
+  //     }
+  
+  //     console.log("Adding book to pending list:", { userId, bookId, bookCover });
+  
+  //     // Simulate adding the book to the pending list
+  //     const pendingBook = {
+  //       bookId,
+  //       bookCover,
+  //     };
+  
+  //     // Add the pending book to the user's 'library.pending' list
+  //     user.library = user.library || {};  // Ensure user.library exists
+  //     user.library.pending = [...(user.library.pending || []), pendingBook];
+  //     console.log("User before save:", user);
+  
+  //     const savedUser = await user.save();
+  //     if (!savedUser) {
+  //       throw new Error("Failed to save user with updated pending list.");
+  //     }
+  
+  //     console.log("Book added to pending:", pendingBook);
+  
+  //     // Respond with success
+  //     res.status(200).json({
+  //       message: "Book successfully added to pending list.",
+  //       pendingBook,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error adding book to pending:", error.message);
+  //     res.status(500).json({ message: "Failed to add book to pending list.", error: error.message });
+  //   }
+  // };
   export const addBookToPending = async (req, res) => {
     try {
       const userId = req.params.userId;
-      const { bookId, bookCover } = req.body;
-  
+      const { bookId, coverImage } = req.body; // Changed bookCover to coverImage
+    
       // Validate userId as a valid MongoDB ObjectId
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ message: "Invalid User ID" });
       }
-  
+    
       // Find the user in the database
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-  
-      // Validate the bookId and bookCover
-      if (!bookId || !bookCover) {
-        return res.status(400).json({ message: "Book ID and cover are required." });
+    
+      // Validate the bookId and coverImage
+      if (!bookId || !coverImage) {
+        return res.status(400).json({ message: "Book ID and cover image are required." });
       }
-  
-      console.log("Adding book to pending list:", { userId, bookId, bookCover });
-  
+    
+      console.log("Adding book to pending list:", { userId, bookId, coverImage });
+    
       // Simulate adding the book to the pending list
       const pendingBook = {
         bookId,
-        bookCover,
+        coverImage, // Changed from bookCover to coverImage
       };
-  
+    
       // Add the pending book to the user's 'library.pending' list
       user.library = user.library || {};  // Ensure user.library exists
       user.library.pending = [...(user.library.pending || []), pendingBook];
       console.log("User before save:", user);
-  
+    
       const savedUser = await user.save();
       if (!savedUser) {
         throw new Error("Failed to save user with updated pending list.");
       }
-  
+    
       console.log("Book added to pending:", pendingBook);
-  
+    
       // Respond with success
       res.status(200).json({
         message: "Book successfully added to pending list.",
@@ -117,6 +168,7 @@ export const addBookToLibrary = async (req, res) => {
       res.status(500).json({ message: "Failed to add book to pending list.", error: error.message });
     }
   };
+  
   
 
   // Controller to fetch pending books

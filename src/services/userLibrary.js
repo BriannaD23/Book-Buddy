@@ -126,8 +126,64 @@ export const getLibrary = async () => {
   }
 };
 
-export const addBookToPending = async (bookId, bookCover) => {
+// Pending section --------------------------------------------------------//
+
+// export const addBookToPending = async (bookId, bookCover) => {
+//   try {
+//     // Validate required parameters
+//     if (!bookId || !bookCover) {
+//       throw new Error("Missing required parameters: bookId or bookCover");
+//     }
+
+//     const decodedPayload = decodeTokenPayload();
+
+//     if (!decodedPayload?.userId) {
+//       throw new Error("No userId found in the token");
+//     }
+
+//     const { userId, token } = decodedPayload;
+
+//     // Construct the payload for the API request
+//     const pendingBook = {
+//       bookId,
+//       bookCover,
+//     };
+//     console.log("Prepared pendingBook payload:", pendingBook);
+
+//     // Make the POST request to the backend
+//     const response = await fetch(`${API_URL}/${userId}/library/pending`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(pendingBook),
+//     });
+
+//     console.log("Add to Pending API response status:", response.status);
+
+//     // Handle non-OK response
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(`Failed to add book to pending: ${errorText}`);
+//     }
+
+//     // Parse and return the response data
+//     const data = await response.json();
+//     console.log("Book successfully added to pending list:", data);
+
+//     return data;
+//   } catch (error) {
+//     console.error("Error adding book to pending:", error.message);
+//     throw error;
+//   }
+// };
+export const addBookToPending = async (bookId, coverImage) => {
   try {
+    // Validate required parameters
+    if (!bookId || !coverImage) {
+      throw new Error("Missing required parameters: bookId or coverImage");
+    }
 
     const decodedPayload = decodeTokenPayload();
 
@@ -137,13 +193,14 @@ export const addBookToPending = async (bookId, bookCover) => {
 
     const { userId, token } = decodedPayload;
 
+    // Construct the payload for the API request
     const pendingBook = {
       bookId,
-      bookCover,
+      coverImage, // Changed from bookCover to coverImage
     };
     console.log("Prepared pendingBook payload:", pendingBook);
 
-    // Post the book to the user's pending list
+    // Make the POST request to the backend
     const response = await fetch(`${API_URL}/${userId}/library/pending`, {
       method: "POST",
       headers: {
@@ -155,17 +212,57 @@ export const addBookToPending = async (bookId, bookCover) => {
 
     console.log("Add to Pending API response status:", response.status);
 
+    // Handle non-OK response
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Failed to add book to pending: ${errorText}`);
     }
 
+    // Parse and return the response data
     const data = await response.json();
     console.log("Book successfully added to pending list:", data);
 
     return data;
   } catch (error) {
     console.error("Error adding book to pending:", error.message);
+    throw error;
+  }
+};
+
+
+export const fetchPendingBooks = async () => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    console.log("Fetching library for userId:", userId);
+
+    const response = await fetch(`${API_URL}/${userId}/library/pending`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Check if the response is not OK
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch pending books');
+    }
+
+    // Parse the response to JSON
+    const data = await response.json();
+    
+    // Return the pending books from the parsed data
+    return data.pendingBooks || [];  // Assuming the API returns `pendingBooks`
+  } catch (error) {
+    console.error('Error fetching pending books:', error.message);
     throw error;
   }
 };
