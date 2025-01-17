@@ -178,6 +178,7 @@ export const getLibrary = async () => {
 //     throw error;
 //   }
 // };
+
 export const addBookToPending = async (bookId, coverImage) => {
   try {
     // Validate required parameters
@@ -266,3 +267,69 @@ export const fetchPendingBooks = async () => {
     throw error;
   }
 };
+
+export const deletePendingBook = async (_id) => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    const response = await fetch(`${API_URL}/${userId}/library/pending/${_id}`, {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete the book');
+    }
+
+    const result = await response.json();
+    console.log("Server response result:", result); // Debug line
+    return result;
+  } catch (error) {
+    console.error('Error deleting pending book:', error);
+    throw error;
+  }
+};
+
+export const deleteMyLibraryBook = async (_id) => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    console.log("Attempting to delete book with ID:", _id); // Debug line
+
+
+    const response = await fetch(`${API_URL}/${userId}/library/mybooks/${_id}`, {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete the book from My Library');
+    }
+
+    const result = await response.json();
+    console.log("Server response result:", result); // Debug line
+    return result;
+  } catch (error) {
+    console.error('Error deleting library book:', error);
+    throw error;
+  }
+};
+
+
+

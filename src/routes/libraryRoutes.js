@@ -1,6 +1,6 @@
 
 import express from 'express';
-import {getLibrary, addBookToLibrary,addBookToPending, getPendingBooks } from '../controllers/libraryController.js';  // Import controller functions
+import {getLibrary, addBookToLibrary,addBookToPending, getPendingBooks, deleteFromPending,  deleteMyLibraryBook  } from '../controllers/libraryController.js';  // Import controller functions
 
 const router = express.Router();
 
@@ -15,6 +15,11 @@ router.post('/:userId/library/pending', addBookToPending);
 
 
 router.get('/:userId/library/pending', getPendingBooks);
+
+router.delete('/:userId/library/pending/:bookId', deleteFromPending);
+
+router.delete('/:userId/library/mybooks/:bookId',  deleteMyLibraryBook );
+
 
 
 

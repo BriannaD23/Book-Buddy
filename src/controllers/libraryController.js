@@ -201,3 +201,96 @@ export const getPendingBooks = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch pending books", error: error.message });
   }
 };
+
+export const deleteFromPending = async (req, res) => {
+  const { userId, bookId } = req.params;
+
+  try {
+    // Validate userId and bookId
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(bookId)) {
+      return res.status(400).json({ message: "Invalid User ID or Book ID." });
+    }
+
+    // Fetch user and check existence
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Check if pending list exists and contains books
+    const pendingBooks = user.library?.pending || [];
+    const bookIndex = pendingBooks.findIndex((book) => book._id.toString() === bookId);
+
+    if (bookIndex === -1) {
+      return res.status(404).json({ message: "Book not found in pending list." });
+    }
+
+    // Remove the book from pending list
+    const [removedBook] = pendingBooks.splice(bookIndex, 1);
+
+    // Save updated user library
+    await user.save();
+
+    res.status(200).json({
+      message: "Book successfully removed from pending list.",
+      removedBook,
+    });
+  } catch (error) {
+    console.error("Error removing book from pending list:", error.message);
+    res.status(500).json({
+      message: "An error occurred while removing the book.",
+      error: error.message,
+    });
+  }
+};
+
+
+// Delete a book from the user's 'mybooks' array in the database
+export const deleteMyLibraryBook = async (req, res) => {
+  try {
+    const { userId, bookId } = req.params;
+
+    // Validate ObjectIds
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(bookId)) {
+      return res.status(400).json({ message: "Invalid User ID or Book ID" });
+    }
+
+    // Find the user in the database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the user has a library and if the 'mybooks' array exists within 'library'
+    if (!user.library || !user.library.mybooks || user.library.mybooks.length === 0) {
+      return res.status(400).json({ message: "No books found in My Library." });
+    }
+
+    // Log the received bookId for debugging
+    console.log('Received bookId:', bookId); // Log the received bookId in the backend
+
+    // Find the index of the book to be removed from the 'mybooks' array inside 'library'
+    const bookIndex = user.library.mybooks.findIndex((book) => book._id.toString() === bookId);
+    if (bookIndex === -1) {
+      return res.status(404).json({ message: "Book not found in My Library." });
+    }
+
+    // Remove the book from the 'mybooks' array
+    const removedBook = user.library.mybooks.splice(bookIndex, 1)[0];
+
+    // Save the updated user
+    const savedUser = await user.save();
+    if (!savedUser) {
+      throw new Error("Failed to save user after removing book.");
+    }
+
+    // Respond with success
+    res.status(200).json({
+      message: "Book successfully removed from My Library.",
+      removedBook,
+    });
+  } catch (error) {
+    console.error("Error removing book from My Library:", error.message);
+    res.status(500).json({ message: "Failed to remove book from My Library.", error: error.message });
+  }
+};

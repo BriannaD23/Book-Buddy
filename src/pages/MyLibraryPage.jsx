@@ -3,6 +3,8 @@ import {
   getLibrary,
   addBookToPending,
   fetchPendingBooks,
+  deletePendingBook,
+  deleteMyLibraryBook,
 } from "../services/userLibrary.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -59,6 +61,17 @@ const MyLibrary = () => {
     }
   };
 
+  const handlePendingBookClick = (bookId) => {
+    const book = pendingBooks.find((b) => b._id === bookId); // Use _id here
+    if (book) {
+      console.log("Found Pending Book:", book);
+      setSelectedBook(book);
+      setShowPendingModal(true);
+    } else {
+      console.log("Pending book not found with ID:", bookId);
+    }
+  };
+  
   const handleAddToPending = async (bookId) => {
     try {
       const bookCover = selectedBook?.coverImage; // Ensure this is available
@@ -75,12 +88,38 @@ const MyLibrary = () => {
     }
   };
 
-
-
-  const handleDeleteBook = (bookId) => {
-    // Your delete logic here
-    console.log(`Deleting book ${bookId}`);
+  const handleDeletePendingBook = async (_id) => {
+    console.log("handleDeletePendingBook triggered with _id:", _id); // Debug
+  
+    try {
+      const result = await deletePendingBook(_id);
+      console.log("Deleted pending book:", result);
+  
+      // Update the pendingBooks state by removing the deleted book
+      setPendingBooks((prevPendingBooks) =>
+        prevPendingBooks.filter((book) => book._id !== _id)
+      );
+    } catch (error) {
+      console.error("Failed to delete pending book:", error);
+    }
   };
+
+  const handleDeleteMyLibraryBook = async (_id) => {
+    console.log(`Deleting book with ID: ${_id}`); // Logs the bookId when the button is clicked
+  
+    try {
+      const result = await deleteMyLibraryBook(_id);
+      console.log("Deleted library book:", result);
+  
+      setBooks((prevLibraryBooks) =>
+        prevLibraryBooks.filter((book) => book._id !== _id)
+      );
+    } catch (error) {
+      console.error("Failed to delete library book:", error);
+    }
+  };
+  
+  
 
   return (
     <div className="text-center">
@@ -212,13 +251,13 @@ const MyLibrary = () => {
                       {/* Hover buttons */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
                         <button
-                          onClick={() => handleBookClick(book._id)}
+                          onClick={() =>  handlePendingBookClick(book._id)}
                           className="bg-black bg-opacity-85 text-white p-3 rounded-full hover:bg-opacity-90 transition-opacity mx-2"
                         >
                           Add
                         </button>
                         <button
-                          onClick={() => handleDeletePendingBook(book.id)}
+                          onClick={() => handleDeletePendingBook(book._id)}
                           className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition-opacity mx-2"
                         >
                           🗑️
@@ -231,10 +270,10 @@ const MyLibrary = () => {
                 </div>
               ))
             ) : (
-              <div className="flex justify-center items-center w-full h-full">
-                <div className="w-36 md:w-48 h-48 bg-gray-200 flex items-center justify-center text-gray-500 font-semibold rounded-lg border border-gray-300 shadow-md">
-                  No Pending Books
-                </div>
+              <div className="flex justify-center items-center w-full h-full pl-3 pr-9">
+              <div className="w-32 h-48 bg-gray-200 flex items-center justify-center text-gray-500 font-semibold rounded-lg border border-gray-300 shadow-md ">
+                No Pending <br />Books
+              </div>
               </div>
             )}
           </div>
@@ -266,14 +305,14 @@ const MyLibrary = () => {
                   Add to Current
                 </button>
                 <button
-                  onClick={() => handleAddToPending(selectedBook._id)} // Pass book.id for the book to be added
+                  onClick={() => handleAddToPending(selectedBook._id)} 
                   className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 ml-4"
                 >
-                  Add to Pending
+                  Add to Complete
                 </button>
               </div>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowPendingModal(false)}
                 className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
               >
                 Close
@@ -347,7 +386,7 @@ const MyLibrary = () => {
                             Add
                           </button>
                           <button
-                            onClick={() => handleDeleteBook(book.id)}
+                            onClick={() => handleDeleteMyLibraryBook(book._id)}
                             className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition-opacity mx-2"
                           >
                             🗑️
