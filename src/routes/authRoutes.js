@@ -12,8 +12,6 @@ const router = express.Router();
 // Routes for email/password authentication
 router.post("/register", registerWithEmail);
 router.post("/login", loginWithEmail);
-
-// Route for Google authentication
 router.post("/google", registerOrLoginWithGoogle);
 
 

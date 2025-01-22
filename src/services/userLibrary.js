@@ -2,7 +2,6 @@ import { decodeTokenPayload } from "../utils/cookieUtils.js";
 
 const API_URL = "http://localhost:5000/api/users";
 
-// Fetch book details from Google Books API
 const fetchBookDetailsFromGoogle = async (bookId) => {
   try {
     console.log(
@@ -39,6 +38,8 @@ const fetchBookDetailsFromGoogle = async (bookId) => {
     throw error;
   }
 };
+
+// ---------------------------Library section --------------------------------------------------------//
 export const addBookToLibrary = async (bookId) => {
   try {
     console.log("Starting addBookToLibrary function with bookId:", bookId);
@@ -126,62 +127,8 @@ export const getLibrary = async () => {
   }
 };
 
-// Pending section --------------------------------------------------------//
-
-// export const addBookToPending = async (bookId, bookCover) => {
-//   try {
-//     // Validate required parameters
-//     if (!bookId || !bookCover) {
-//       throw new Error("Missing required parameters: bookId or bookCover");
-//     }
-
-//     const decodedPayload = decodeTokenPayload();
-
-//     if (!decodedPayload?.userId) {
-//       throw new Error("No userId found in the token");
-//     }
-
-//     const { userId, token } = decodedPayload;
-
-//     // Construct the payload for the API request
-//     const pendingBook = {
-//       bookId,
-//       bookCover,
-//     };
-//     console.log("Prepared pendingBook payload:", pendingBook);
-
-//     // Make the POST request to the backend
-//     const response = await fetch(`${API_URL}/${userId}/library/pending`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify(pendingBook),
-//     });
-
-//     console.log("Add to Pending API response status:", response.status);
-
-//     // Handle non-OK response
-//     if (!response.ok) {
-//       const errorText = await response.text();
-//       throw new Error(`Failed to add book to pending: ${errorText}`);
-//     }
-
-//     // Parse and return the response data
-//     const data = await response.json();
-//     console.log("Book successfully added to pending list:", data);
-
-//     return data;
-//   } catch (error) {
-//     console.error("Error adding book to pending:", error.message);
-//     throw error;
-//   }
-// };
-
-export const addBookToPending = async (bookId, coverImage) => {
+export const updateCurrentBookFromLibrary = async (bookId, coverImage) => {
   try {
-    // Validate required parameters
     if (!bookId || !coverImage) {
       throw new Error("Missing required parameters: bookId or coverImage");
     }
@@ -194,14 +141,251 @@ export const addBookToPending = async (bookId, coverImage) => {
 
     const { userId, token } = decodedPayload;
 
-    // Construct the payload for the API request
+    const responseCurrentBook = await fetch(`${API_URL}/${userId}/library/current`, {
+      method: "GET",  
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    if (!responseCurrentBook.ok) {
+      const errorText = await responseCurrentBook.text();
+      throw new Error(`Failed to fetch current book: ${errorText}`);
+    }
+
+    const currentBookData = await responseCurrentBook.json();
+
+    // If the user already has a current book, show an alert
+    if (currentBookData && currentBookData.bookId) {
+      alert("You can only have one book in your current list at a time.");
+      return;  // Exit the function
+    }
+
+    // If no current book, proceed to add the new one
+    const currentBook = {
+      bookId,
+      coverImage,
+    };
+
+    console.log("Prepared currentBook payload:", currentBook);
+
+    const response = await fetch(`${API_URL}/${userId}/library/current`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(currentBook),
+    });
+
+    console.log("Add to Pending API response status:", response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      const data = JSON.parse(errorText);  // Assuming the error response contains a message
+      if (data.message === "You already have a book in your current list.") {
+        alert(data.message);  // Show message to user
+        return;
+      }
+      throw new Error(`Failed to add book to current: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log("Book successfully added to current list:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error adding book to current:", error.message);
+    alert(`Error: ${error.message}`);  // Display error message to user
+    throw error;
+  }
+};
+
+export const addBookToCompleted = async (bookId, coverImage) => {
+  try {
+    // Validate the input parameters
+    if (!bookId || !coverImage) {
+      throw new Error("Missing required parameters: bookId or coverImage");
+    }
+
+    // Decode the token payload
+    const decodedPayload = decodeTokenPayload();
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    const completedBook = { bookId, coverImage };
+    console.log("Payload to send:", completedBook);
+
+    const response = await fetch(`${API_URL}/${userId}/library/completed`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(completedBook),
+      }
+    );
+
+    console.log("API Response Status:", response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response from server:", errorText);
+      throw new Error(`Failed to add book to completed: ${errorText}`);
+    }
+    const data = await response.json();
+    console.log("Response data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error adding book to completed:", error.message);
+    throw error;
+  }
+};
+
+// export const fetchCompletedBooks = async () => {
+//   try {
+//     const decodedPayload = decodeTokenPayload();
+
+//     if (!decodedPayload?.userId) {
+//       throw new Error("No userId found in the token");
+//     }
+
+//     const { userId, token } = decodedPayload;
+
+//     const response = await fetch(`${API_URL}/${userId}/library/completed`, {
+//       method: "GET",
+//       headers: {
+//         "Authorization": `Bearer ${token}`,
+//       },
+//     });
+
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(`Failed to fetch completed books: ${errorText}`);
+//     }
+
+//     const completedBooks = await response.json();
+//     console.log("Completed books fetched successfully:", completedBooks);
+
+//     return completedBooks; 
+//   } catch (error) {
+//     console.error("Error fetching completed books:", error.message);
+//     alert(`Error: ${error.message}`); 
+//     throw error;
+//   }
+// };
+
+
+export const  fetchCompletedBooks = async () => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    console.log("Fetching library for userId:", userId);
+
+    const response = await fetch(`${API_URL}/${userId}/library/completed`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to fetch pending books');
+    }
+
+    const data = await response.json();
+    
+    
+    return data.completedBooks || [];  
+  } catch (error) {
+    console.error('Error fetching pending books:', error.message);
+    throw error;
+  }
+};
+
+
+
+
+// ---------------------------Pending section --------------------------------------------------------//
+export const fetchCurrentBookFromLibrary = async () => {
+  try {
+    console.log("Decoding token...");
+    const decodedPayload = decodeTokenPayload();
+
+    if (!decodedPayload?.userId) {
+      console.error("No userId found in the token");
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+    console.log("Decoded userId:", userId);
+
+    console.log("Fetching current book for userId:", userId);
+    const response = await fetch(`${API_URL}/${userId}/library/current`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Failed to fetch current book:", errorText);
+      throw new Error(`Failed to fetch current book: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log("Full Current Book Data:", data); // Log the entire response for debugging
+
+   
+    if (data?.currentBook && typeof data.currentBook === 'object') {
+      console.log("Current book found:", data.currentBook);
+      return data.currentBook; 
+    } else {
+      console.error("No currentBook field or incorrect data structure:", data);
+      throw new Error("No currentBook field or incorrect data structure.");
+    }
+
+  } catch (error) {
+    console.error("Error fetching current book:", error.message);
+    throw error;
+  }
+};
+
+
+export const addBookToPending = async (bookId, coverImage) => {
+  try {
+    if (!bookId || !coverImage) {
+      throw new Error("Missing required parameters: bookId or coverImage");
+    }
+
+    const decodedPayload = decodeTokenPayload();
+
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
     const pendingBook = {
       bookId,
-      coverImage, // Changed from bookCover to coverImage
+      coverImage, 
     };
     console.log("Prepared pendingBook payload:", pendingBook);
 
-    // Make the POST request to the backend
     const response = await fetch(`${API_URL}/${userId}/library/pending`, {
       method: "POST",
       headers: {
@@ -219,7 +403,6 @@ export const addBookToPending = async (bookId, coverImage) => {
       throw new Error(`Failed to add book to pending: ${errorText}`);
     }
 
-    // Parse and return the response data
     const data = await response.json();
     console.log("Book successfully added to pending list:", data);
 
@@ -251,22 +434,26 @@ export const fetchPendingBooks = async () => {
       },
     });
 
-    // Check if the response is not OK
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || 'Failed to fetch pending books');
     }
 
-    // Parse the response to JSON
     const data = await response.json();
     
-    // Return the pending books from the parsed data
-    return data.pendingBooks || [];  // Assuming the API returns `pendingBooks`
+    
+    return data.pendingBooks || [];  
   } catch (error) {
     console.error('Error fetching pending books:', error.message);
     throw error;
   }
 };
+
+
+// ---------------------------Delete section --------------------------------------------------------//
+
+
+
 
 export const deletePendingBook = async (_id) => {
   try {
@@ -307,7 +494,7 @@ export const deleteMyLibraryBook = async (_id) => {
 
     const { userId, token } = decodedPayload;
 
-    console.log("Attempting to delete book with ID:", _id); // Debug line
+    console.log("Attempting to delete book with ID:", _id); 
 
 
     const response = await fetch(`${API_URL}/${userId}/library/mybooks/${_id}`, {
@@ -323,7 +510,40 @@ export const deleteMyLibraryBook = async (_id) => {
     }
 
     const result = await response.json();
-    console.log("Server response result:", result); // Debug line
+    console.log("Server response result:", result); 
+    return result;
+  } catch (error) {
+    console.error('Error deleting library book:', error);
+    throw error;
+  }
+};
+
+export const deleteCompletedBooks = async (_id) => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    console.log("Attempting to delete book with ID:", _id); 
+
+
+    const response = await fetch(`${API_URL}/${userId}/library/completed/${_id}`, {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete the book from completed');
+    }
+
+    const result = await response.json();
+    console.log("Server response result:", result); 
     return result;
   } catch (error) {
     console.error('Error deleting library book:', error);
@@ -333,3 +553,45 @@ export const deleteMyLibraryBook = async (_id) => {
 
 
 
+
+
+
+export const deleteCurrentBook = async (bookId) => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    const response = await fetch(`${API_URL}/${userId}/library/current/${bookId}`, {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete the book from current');
+    }
+
+    const result = await response.json();
+
+    if (result.message === "Current book successfully removed.") {
+      return {
+        success: true,
+        currentBook: result.currentBook, // This will contain bookId and coverImage as null
+      };
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (error) {
+    console.error('Error deleting current book from the library:', error);
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};

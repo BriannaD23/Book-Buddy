@@ -1,33 +1,34 @@
 
 import express from 'express';
-import {getLibrary, addBookToLibrary,addBookToPending, getPendingBooks, deleteFromPending,  deleteMyLibraryBook  } from '../controllers/libraryController.js';  // Import controller functions
+import {getLibrary, addBookToLibrary, addBookToCurrentFromLibrary,  addBookToPending,addBookToCompleted ,getPendingBooks,loadCompletedBooks, deleteFromPending,  deleteMyLibraryBook, getCurrentBook, deleteCurrentBook , deleteCompletedBooks  } from '../controllers/libraryController.js';  
 
 const router = express.Router();
 
-// Route to get the user's library (mybooks)
 router.get('/:userId/library/mybooks', getLibrary);
 
-// Route to add a book to 'mybooks' section
 router.post('/:userId/library/mybooks', addBookToLibrary);
 
+router.put('/:userId/library/current', addBookToCurrentFromLibrary);
+
+router.get('/:userId/library/current', getCurrentBook);
 
 router.post('/:userId/library/pending', addBookToPending);
 
-
 router.get('/:userId/library/pending', getPendingBooks);
+
+router.post('/:userId/library/completed', addBookToCompleted);
+
+router.delete('/:userId/library/completed/:bookId', deleteCompletedBooks);
+
+router.get('/:userId/library/completed', loadCompletedBooks);
+
 
 router.delete('/:userId/library/pending/:bookId', deleteFromPending);
 
 router.delete('/:userId/library/mybooks/:bookId',  deleteMyLibraryBook );
 
+router.delete('/:userId/library/current/:bookId',  deleteCurrentBook );
 
-
-
-// // Route to get the user's current books
-// router.get('/:userId/library/current', getCurrentBooks);
-
-// // Route to add a book to 'current' section
-// router.post('/:userId/library/current', addBookToCurrent);
 
 export default router;
 
