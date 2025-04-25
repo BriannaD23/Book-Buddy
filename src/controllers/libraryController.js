@@ -197,53 +197,40 @@ export const addBookToPending = async (req, res) => {
 export const addBookToCompleted = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { bookId, coverImage } = req.body;
+    const { bookId } = req.body;
 
-    // Validate input
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid User ID" });
+    if (!mongoose.Types.ObjectId.isValid(userId) || !bookId) {
+      return res.status(400).json({ message: "Invalid User ID or Book ID." });
     }
 
-    if (!bookId || !coverImage) {
-      return res
-        .status(400)
-        .json({ message: "Book ID and cover image are required." });
-    }
-
-    // Find the user
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Initialize library and books array if necessary
-    user.library = user.library || {};
+    const book = user.library?.mybooks?.find((b) => b.bookId === bookId);
+    if (!book) return res.status(404).json({ message: "Book not found in library." });
+
     user.library.completed = user.library.completed || [];
 
-    // Add the book to the completed books array
-    const completedBook = { bookId, coverImage };
-    user.library.completed.push(completedBook);
-
-    // Save the updated user document
-    const savedUser = await user.save();
-    if (!savedUser) {
-      throw new Error("Failed to save user with updated completed books.");
+    if (user.library.completed.some((b) => b.bookId === bookId)) {
+      return res.status(400).json({ message: "Book is already completed." });
     }
 
-    res.status(200).json({
-      message: "Book successfully added to completed list.",
-      completedBook,
-    });
+    const completedBook = {
+      bookId: book.bookId,
+      coverImage: book.coverImage,
+      title: book.title || "Unknown Title",
+      author: book.author || "Unknown Author",
+    };
+
+    user.library.completed.push(completedBook);
+    await user.save();
+
+    res.status(200).json({ message: "Book added to completed list.", completedBook });
   } catch (error) {
-    console.error("Error adding book to completed:", error.message);
-    res
-      .status(500)
-      .json({
-        message: "Failed to add book to completed list.",
-        error: error.message,
-      });
+    res.status(500).json({ message: "Failed to add book to completed list.", error: error.message });
   }
 };
+
 
 export const getCurrentBook = async (req, res) => {
   try {

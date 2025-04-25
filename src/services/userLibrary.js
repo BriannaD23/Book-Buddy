@@ -26,8 +26,12 @@ const fetchBookDetailsFromGoogle = async (bookId) => {
     const { volumeInfo } = data;
 
     const coverImage = volumeInfo.imageLinks?.thumbnail || null;
+    const title = volumeInfo.title || "Unknown Title";
+    const author = volumeInfo.authors ? volumeInfo.authors.join(", ") : "Unknown Author";
 
     console.log("Extracted coverImage:", coverImage);
+    console.log("Extracted title:", title);
+    console.log("Extracted authors:", author);
 
     return { coverImage };
   } catch (error) {
@@ -44,8 +48,8 @@ export const addBookToLibrary = async (bookId) => {
   try {
     console.log("Starting addBookToLibrary function with bookId:", bookId);
 
-    const { coverImage } = await fetchBookDetailsFromGoogle(bookId);
-    console.log("Fetched book details:", { coverImage });
+    const { coverImage,title,author } = await fetchBookDetailsFromGoogle(bookId);
+    console.log("Fetched book details:", { coverImage,title ,author});
 
     const decodedPayload = decodeTokenPayload();
     console.log("Decoded token payload:", decodedPayload);
@@ -56,7 +60,7 @@ export const addBookToLibrary = async (bookId) => {
 
     const { userId, token } = decodedPayload;
 
-    const newBook = { bookId, coverImage };
+    const newBook = { bookId, coverImage , title, author  };
     console.log("Prepared newBook payload:", newBook);
 
     const response = await fetch(`${API_URL}/${userId}/library/mybooks`, {
@@ -245,39 +249,6 @@ export const addBookToCompleted = async (bookId, coverImage) => {
     throw error;
   }
 };
-
-// export const fetchCompletedBooks = async () => {
-//   try {
-//     const decodedPayload = decodeTokenPayload();
-
-//     if (!decodedPayload?.userId) {
-//       throw new Error("No userId found in the token");
-//     }
-
-//     const { userId, token } = decodedPayload;
-
-//     const response = await fetch(`${API_URL}/${userId}/library/completed`, {
-//       method: "GET",
-//       headers: {
-//         "Authorization": `Bearer ${token}`,
-//       },
-//     });
-
-//     if (!response.ok) {
-//       const errorText = await response.text();
-//       throw new Error(`Failed to fetch completed books: ${errorText}`);
-//     }
-
-//     const completedBooks = await response.json();
-//     console.log("Completed books fetched successfully:", completedBooks);
-
-//     return completedBooks; 
-//   } catch (error) {
-//     console.error("Error fetching completed books:", error.message);
-//     alert(`Error: ${error.message}`); 
-//     throw error;
-//   }
-// };
 
 
 export const  fetchCompletedBooks = async () => {

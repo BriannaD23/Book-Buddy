@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
       {
         coverImage: { type: String },
         bookId: { type: String, required: true },
+        title: { type: String },
+        author: { type: String },
       },
     ],
     current: {
@@ -31,6 +33,8 @@ const userSchema = new mongoose.Schema({
       {
         coverImage: { type: String },
         bookId: { type: String },
+        title: { type: String }, 
+        author: { type: String },
         rating: { type: Number, min: 0, max: 5 },
       },
     ],
