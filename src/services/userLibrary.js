@@ -24,16 +24,18 @@ const fetchBookDetailsFromGoogle = async (bookId) => {
     console.log("Google Books API response data:", data);
 
     const { volumeInfo } = data;
-
+    
     const coverImage = volumeInfo.imageLinks?.thumbnail || null;
     const title = volumeInfo.title || "Unknown Title";
     const author = volumeInfo.authors ? volumeInfo.authors.join(", ") : "Unknown Author";
+
+    console.log("Full volumeInfo:", volumeInfo);
 
     console.log("Extracted coverImage:", coverImage);
     console.log("Extracted title:", title);
     console.log("Extracted authors:", author);
 
-    return { coverImage };
+    return { coverImage, title, author };
   } catch (error) {
     console.error(
       "Error fetching book details from Google Books API:",
