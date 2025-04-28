@@ -33,75 +33,82 @@ app.use(cors());
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/users", libraryRoutes); const updateCompletedBooks = async () => {
-  try {
-    const users = await User.find();
+app.use("/api/users", libraryRoutes);
 
-    for (let user of users) {
-      if (user.library?.completed) {
-        let updated = false;
-        user.library.completed = user.library.completed.map((book) => {
-          if (!book.title || !book.author) {
-            updated = true;
-            return {
-              ...book,
-              title: book.title || "Unknown Title",
-              author: book.author || "Unknown Author",
-            };
-          }
-          return book;
-        });
-
-        if (updated) {
-          await user.save();
-          console.log(`Updated user ${user._id}`);
-        }
-      }
-    }
-
-    console.log("Completed books updated successfully.");
-  } catch (error) {
-    console.error("Error updating completed books:", error);
-  }
-};
-
-// const updateMyBooks = async () => {
+// const updateCurrentBook = async () => {
 //   try {
-//     // No need to reconnect here, as mongoose is already connected via server.js
-
 //     const users = await User.find();
 
 //     for (let user of users) {
-//       if (user.library?.mybooks) {
+//       if (user.library?.current) {
 //         let updated = false;
-//         user.library.mybooks = user.library.mybooks.map((book) => {
-//           // Check for missing fields and add default values
-//           if (!book.title || !book.author) {
-//             updated = true;
-//             return {
-//               ...book,
-//               title: book.title || "Unknown Title",
-//               author: book.author || "Unknown Author",
-//             };
-//           }
-//           return book;
-//         });
+//         const current = user.library.current;
+
+//         if (!current.title || !current.author) {
+//           updated = true;
+//           user.library.current = {
+//             ...current,
+//             title: current.title || "Unknown Title",
+//             author: current.author || "Unknown Author",
+//           };
+//         }
 
 //         if (updated) {
 //           await user.save();
-//           console.log(`Updated user ${user._id}'s mybooks`);
+//           console.log(`Updated user ${user._id}`);
 //         }
 //       }
 //     }
 
-//     console.log("MyBooks section updated successfully.");
+//     console.log("Current book updated successfully.");
 //   } catch (error) {
-//     console.error("Error updating mybooks:", error);
+//     console.error("Error updating current book:", error);
 //   }
 // };
 
-// updateMyBooks();
+// updateCurrentBook(); // Make sure this is called after defining it
 
+const updatePendingBooks = async () => {
+  try {
+    const users = await User.find();
+
+    for (let user of users) {
+      if (user.library?.pending) {
+        let updated = false;
+
+        // Loop through each pending book and update missing title and author
+        user.library.pending = user.library.pending.map((pendingBook) => {
+          if (!pendingBook.title || !pendingBook.author) {
+            updated = true;
+
+            // Log to check the book being updated
+            console.log('Updating pending book:', pendingBook);
+
+            return {
+              ...pendingBook,
+              title: pendingBook.title || "Unknown Title",
+              author: pendingBook.author || "Unknown Author",
+            };
+          }
+          return pendingBook;
+        });
+
+        if (updated) {
+          // Save the user with updated pending books
+          await user.save();
+          console.log(`Updated user ${user._id}'s pending books`);
+        }
+      }
+    }
+
+    console.log("Pending books updated successfully.");
+  } catch (error) {
+    console.error("Error updating pending books:", error);
+  }
+};
+
+// Call the function to update pending books
+updatePendingBooks();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

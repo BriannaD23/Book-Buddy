@@ -90,8 +90,11 @@ const MyLibrary = () => {
 
   const handleAddToPending = async (bookId) => {
     try {
+      
       const bookCover = selectedBook?.coverImage;
-      const result = await addBookToPending(bookId, bookCover);
+      const bookTitle = selectedBook?.title; // Get the title
+      const bookAuthor = selectedBook?.author;
+      const result = await addBookToPending(bookId, bookCover, bookTitle, bookAuthor);
       console.log("Book added to pending list:", result);
 
       setPendingBooks((prevPendingBooks) => [
@@ -117,6 +120,8 @@ const MyLibrary = () => {
       console.log("Attempting to add book to completed:", {
         bookId,
         bookCover,
+        title,
+        author,
       });
 
       const result = await addBookToCompleted(bookId, bookCover);
@@ -149,8 +154,16 @@ const MyLibrary = () => {
   const handleAddToCurrent = async (bookId) => {
     try {
       const bookCover = selectedBook?.coverImage;
+      const bookTitle = selectedBook?.title;
+      const bookAuthor = selectedBook?.author;
 
-      const result = await updateCurrentBookFromLibrary(bookId, bookCover);
+      // Ensure that title and author are passed along with bookId and coverImage
+      const result = await updateCurrentBookFromLibrary(
+        bookId,
+        bookCover,
+        bookTitle,
+        bookAuthor
+      );
       console.log("Book added to current:", result);
 
       setCurrentBook(result);
@@ -280,12 +293,13 @@ const MyLibrary = () => {
           </h2>
           <div className="relative flex justify-center items-center">
             {currentBook?.coverImage ? (
-              <div className="relative group">
+              <div className="relative group flex flex-col items-center">
                 <img
                   src={currentBook.coverImage}
                   alt="Book Cover"
                   className="w-32 h-48 object-cover rounded-lg"
                 />
+
                 {/* Delete button */}
                 <button
                   onClick={() => handleDeleteCurrentBook(currentBook.bookId)}
@@ -293,6 +307,14 @@ const MyLibrary = () => {
                 >
                   Delete Book
                 </button>
+
+                {/* Book Title and Author */}
+                <div className="mt-2 text-center">
+                  <p className="text-lg font-semibold text-gray-800">
+                    {currentBook.title}
+                  </p>
+                  <p className="text-sm text-gray-600">{currentBook.author}</p>
+                </div>
               </div>
             ) : (
               <div className="w-32 h-48 bg-gray-200 flex items-center justify-center text-gray-500 font-semibold rounded-lg border border-gray-300 shadow-md px-1">
@@ -301,6 +323,7 @@ const MyLibrary = () => {
             )}
           </div>
           {/* Buttons to add or edit book details */}
+
           <div className="flex justify-between mt-4">
             <button
               onClick={() => setIsEditing(true)}
@@ -422,8 +445,6 @@ const MyLibrary = () => {
             </div>
           </div>
         )}
-
-
 
         {/* -----------------------------Completed Books Section ------------------------------------*/}
         <div className="w-full md:w-1/2 p-5 border-2 border-gray-300 shadow-lg rounded-lg bg-white">

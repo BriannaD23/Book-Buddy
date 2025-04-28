@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
       {
         coverImage: { type: String },
         bookId: { type: String, required: true },
+        title: { type: String },
+        author: { type: String },
       },
     ],
     completed: [

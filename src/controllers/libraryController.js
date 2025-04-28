@@ -4,12 +4,12 @@ import User from "../models/userModel.js";
 export const addBookToLibrary = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const { coverImage, bookId } = req.body;
+    const { coverImage, bookId, title, author } = req.body;
 
     console.log("Received coverImage:", coverImage);
     console.log("Received bookId:", bookId);
-
-    console.log("Received coverImage:", coverImage);
+    console.log("Received title:", title);
+    console.log("Received coverImage:", author);
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid User ID" });
@@ -23,6 +23,8 @@ export const addBookToLibrary = async (req, res) => {
     const newBook = {
       bookId, // Corrected variable name to bookId
       coverImage,
+      title,
+      author,
     };
 
     user.library.mybooks.push(newBook);
@@ -88,10 +90,11 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
     }
 
     // Validate bookId and coverImage are provided
-    if (!bookId || !coverImage) {
-      return res
-        .status(400)
-        .json({ message: "Book ID and cover image are required." });
+    if (!bookId || !coverImage || !title || !author) {
+      return res.status(400).json({
+        message:
+          "Missing required fields: bookId, coverImage, title, and author.",
+      });
     }
 
     // Check if there is already a book in the current list
@@ -105,10 +108,10 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
       title,
       author,
       bookId,
-      pages,
-      progress: 0, // Initial progress can be 0 or any other default value you need
-      startDate: new Date(),
-      endDate: null, // endDate can be set when the user finishes the book
+      pages: pages || 0, // Default to 0 if not provided
+      progress: 0, // Always start at 0
+      startDate: new Date(), // Start now
+      endDate: null,
     };
 
     // Optionally, you could also remove the book from `mybooks` and/or `pending`
@@ -130,19 +133,17 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding book to current:", error.message);
-    res
-      .status(500)
-      .json({
-        message: "Failed to add book to current.",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Failed to add book to current.",
+      error: error.message,
+    });
   }
 };
 
 export const addBookToPending = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const { bookId, coverImage } = req.body;
+    const { bookId, coverImage, title, author } = req.body;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid User ID" });
     }
@@ -160,11 +161,19 @@ export const addBookToPending = async (req, res) => {
         .json({ message: "Book ID and cover image are required." });
     }
 
-    console.log("Adding book to pending list:", { userId, bookId, coverImage });
+    console.log("Adding book to pending list:", {
+      userId,
+      bookId,
+      coverImage,
+      title,
+      author,
+    });
 
     const pendingBook = {
       bookId,
       coverImage,
+      title,
+      author,
     };
 
     user.library = user.library || {};
@@ -185,12 +194,10 @@ export const addBookToPending = async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding book to pending:", error.message);
-    res
-      .status(500)
-      .json({
-        message: "Failed to add book to pending list.",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Failed to add book to pending list.",
+      error: error.message,
+    });
   }
 };
 
@@ -207,7 +214,8 @@ export const addBookToCompleted = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const book = user.library?.mybooks?.find((b) => b.bookId === bookId);
-    if (!book) return res.status(404).json({ message: "Book not found in library." });
+    if (!book)
+      return res.status(404).json({ message: "Book not found in library." });
 
     user.library.completed = user.library.completed || [];
 
@@ -225,12 +233,16 @@ export const addBookToCompleted = async (req, res) => {
     user.library.completed.push(completedBook);
     await user.save();
 
-    res.status(200).json({ message: "Book added to completed list.", completedBook });
+    res
+      .status(200)
+      .json({ message: "Book added to completed list.", completedBook });
   } catch (error) {
-    res.status(500).json({ message: "Failed to add book to completed list.", error: error.message });
+    res.status(500).json({
+      message: "Failed to add book to completed list.",
+      error: error.message,
+    });
   }
 };
-
 
 export const getCurrentBook = async (req, res) => {
   try {
@@ -301,7 +313,6 @@ export const getPendingBooks = async (req, res) => {
   }
 };
 
-
 export const loadCompletedBooks = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -315,21 +326,22 @@ export const loadCompletedBooks = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const completedBooks = user.library?.completed ||  [];
-
+    const completedBooks = user.library?.completed || [];
 
     if (completedBooks.length === 0) {
       return res.status(200).json({ message: "No books in the pending list." });
     }
 
-    res
-      .status(200)
-      .json({ message: "Completed books fetched successfully", completedBooks});
+    res.status(200).json({
+      message: "Completed books fetched successfully",
+      completedBooks,
+    });
   } catch (error) {
     console.error("Error fetching completed books:", error.message);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch completed books", error: error.message });
+    res.status(500).json({
+      message: "Failed to fetch completed books",
+      error: error.message,
+    });
   }
 };
 
@@ -428,15 +440,12 @@ export const deleteMyLibraryBook = async (req, res) => {
     });
   } catch (error) {
     console.error("Error removing book from My Library:", error.message);
-    res
-      .status(500)
-      .json({
-        message: "Failed to remove book from My Library.",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Failed to remove book from My Library.",
+      error: error.message,
+    });
   }
 };
-
 
 export const deleteCompletedBooks = async (req, res) => {
   try {
@@ -484,15 +493,12 @@ export const deleteCompletedBooks = async (req, res) => {
     });
   } catch (error) {
     console.error("Error removing book from completed:", error.message);
-    res
-      .status(500)
-      .json({
-        message: "Failed to remove book from completed.",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Failed to remove book from completed.",
+      error: error.message,
+    });
   }
 };
-
 
 export const deleteCurrentBook = async (req, res) => {
   const { userId, bookId } = req.params;

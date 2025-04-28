@@ -133,7 +133,7 @@ export const getLibrary = async () => {
   }
 };
 
-export const updateCurrentBookFromLibrary = async (bookId, coverImage) => {
+export const updateCurrentBookFromLibrary = async (bookId, coverImage,title, author) => {
   try {
     if (!bookId || !coverImage) {
       throw new Error("Missing required parameters: bookId or coverImage");
@@ -171,6 +171,8 @@ export const updateCurrentBookFromLibrary = async (bookId, coverImage) => {
     const currentBook = {
       bookId,
       coverImage,
+      title,
+      author
     };
 
     console.log("Prepared currentBook payload:", currentBook);
@@ -339,7 +341,7 @@ export const fetchCurrentBookFromLibrary = async () => {
 };
 
 
-export const addBookToPending = async (bookId, coverImage) => {
+export const addBookToPending = async (bookId, coverImage, title, author) => {
   try {
     if (!bookId || !coverImage) {
       throw new Error("Missing required parameters: bookId or coverImage");
@@ -355,7 +357,9 @@ export const addBookToPending = async (bookId, coverImage) => {
 
     const pendingBook = {
       bookId,
-      coverImage, 
+      coverImage,
+      title,
+      author 
     };
     console.log("Prepared pendingBook payload:", pendingBook);
 
