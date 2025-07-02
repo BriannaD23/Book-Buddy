@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "postinstall": "rm -rf node_modules/.vite && echo 'Fixed Vite native bug'",
     "start": "node backend/server.js"
   },
   "dependencies": {
