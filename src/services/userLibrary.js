@@ -1,6 +1,6 @@
 import { decodeTokenPayload } from "../utils/cookieUtils.js";
 
-const API_URL = "http://localhost:5000/api/users";
+const API_URL = "http://localhost:5001/api/users";
 
 const fetchBookDetailsFromGoogle = async (bookId) => {
   try {
@@ -209,10 +209,10 @@ export const updateCurrentBookFromLibrary = async (bookId, coverImage,title, aut
   }
 };
 
-export const addBookToCompleted = async (bookId, coverImage) => {
+export const addBookToCompleted = async (bookId, coverImage, title, author) => {
   try {
     // Validate the input parameters
-    if (!bookId || !coverImage) {
+    if (!bookId || !coverImage || !title || !author) {
       throw new Error("Missing required parameters: bookId or coverImage");
     }
 
@@ -224,7 +224,7 @@ export const addBookToCompleted = async (bookId, coverImage) => {
 
     const { userId, token } = decodedPayload;
 
-    const completedBook = { bookId, coverImage };
+    const completedBook = { bookId, coverImage, title, author };
     console.log("Payload to send:", completedBook);
 
     const response = await fetch(`${API_URL}/${userId}/library/completed`,{

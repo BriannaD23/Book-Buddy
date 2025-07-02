@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI)
   });
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 
 
@@ -34,6 +34,12 @@ app.use(cors());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", libraryRoutes);
+
+
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // const updateCurrentBook = async () => {
 //   try {
@@ -67,49 +73,3 @@ app.use("/api/users", libraryRoutes);
 // };
 
 // updateCurrentBook(); // Make sure this is called after defining it
-
-const updatePendingBooks = async () => {
-  try {
-    const users = await User.find();
-
-    for (let user of users) {
-      if (user.library?.pending) {
-        let updated = false;
-
-        // Loop through each pending book and update missing title and author
-        user.library.pending = user.library.pending.map((pendingBook) => {
-          if (!pendingBook.title || !pendingBook.author) {
-            updated = true;
-
-            // Log to check the book being updated
-            console.log('Updating pending book:', pendingBook);
-
-            return {
-              ...pendingBook,
-              title: pendingBook.title || "Unknown Title",
-              author: pendingBook.author || "Unknown Author",
-            };
-          }
-          return pendingBook;
-        });
-
-        if (updated) {
-          // Save the user with updated pending books
-          await user.save();
-          console.log(`Updated user ${user._id}'s pending books`);
-        }
-      }
-    }
-
-    console.log("Pending books updated successfully.");
-  } catch (error) {
-    console.error("Error updating pending books:", error);
-  }
-};
-
-// Call the function to update pending books
-updatePendingBooks();
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
