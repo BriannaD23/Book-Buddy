@@ -201,48 +201,98 @@ export const addBookToPending = async (req, res) => {
   }
 };
 
+// export const addBookToCompleted = async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+//     const { bookId, coverImage, title, author } = req.body;
+
+//     if (!mongoose.Types.ObjectId.isValid(userId) || !bookId) {
+//       return res.status(400).json({ message: "Invalid User ID or Book ID." });
+//     }
+
+//     const user = await User.findById(userId);
+//     if (!user) return res.status(404).json({ message: "User not found" });
+
+//     const book = user.library?.mybooks?.find((b) => b.bookId === bookId);
+//     if (!book)
+//       return res.status(404).json({ message: "Book not found in library." });
+
+//     user.library.completed = user.library.completed || [];
+
+//     if (user.library.completed.some((b) => b.bookId === bookId)) {
+//       return res.status(400).json({ message: "Book is already completed." });
+//     }
+
+//     const completedBook = {
+//       bookId: book.bookId,
+//       coverImage: coverImage,
+//       title: title || "Unknown Title",
+//       author: author || "Unknown Author",
+//     };
+
+//     user.library.completed.push(completedBook);
+//     await user.save();
+
+//     res
+//       .status(200)
+//       .json({ message: "Book added to completed list.", completedBook });
+//   } catch (error) {
+//     res.status(500).json({
+//       message: "Failed to add book to completed list.",
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const addBookToCompleted = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { bookId } = req.body;
+    const { bookId, coverImage, title, author } = req.body;
+
+    console.log("Request received to add book to completed:", { userId, bookId, coverImage, title, author });
 
     if (!mongoose.Types.ObjectId.isValid(userId) || !bookId) {
+      console.log('Invalid User ID or Book ID');
       return res.status(400).json({ message: "Invalid User ID or Book ID." });
     }
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    const book = user.library?.mybooks?.find((b) => b.bookId === bookId);
-    if (!book)
-      return res.status(404).json({ message: "Book not found in library." });
+    if (!user) {
+      console.log('User not found with ID:', userId);
+      return res.status(404).json({ message: "User not found" });
+    }
 
     user.library.completed = user.library.completed || [];
 
     if (user.library.completed.some((b) => b.bookId === bookId)) {
+      console.log('Book already marked as completed:', bookId);
       return res.status(400).json({ message: "Book is already completed." });
     }
 
     const completedBook = {
-      bookId: book.bookId,
-      coverImage: book.coverImage,
-      title: book.title || "Unknown Title",
-      author: book.author || "Unknown Author",
+      bookId,
+      coverImage,
+      title: title || "Unknown Title",
+      author: author || "Unknown Author",
     };
+
+    console.log('Adding book to completed list:', completedBook);
 
     user.library.completed.push(completedBook);
     await user.save();
+    console.log('User after saving:', user);
 
-    res
-      .status(200)
-      .json({ message: "Book added to completed list.", completedBook });
+    res.status(200).json({ message: "Book added to completed list.", completedBook });
   } catch (error) {
+    console.error('Error occurred while adding book to completed list:', error.message);
     res.status(500).json({
       message: "Failed to add book to completed list.",
       error: error.message,
     });
   }
 };
+
+
 
 export const getCurrentBook = async (req, res) => {
   try {

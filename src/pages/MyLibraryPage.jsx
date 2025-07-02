@@ -90,11 +90,15 @@ const MyLibrary = () => {
 
   const handleAddToPending = async (bookId) => {
     try {
-      
       const bookCover = selectedBook?.coverImage;
       const bookTitle = selectedBook?.title; // Get the title
       const bookAuthor = selectedBook?.author;
-      const result = await addBookToPending(bookId, bookCover, bookTitle, bookAuthor);
+      const result = await addBookToPending(
+        bookId,
+        bookCover,
+        bookTitle,
+        bookAuthor
+      );
       console.log("Book added to pending list:", result);
 
       setPendingBooks((prevPendingBooks) => [
@@ -112,23 +116,36 @@ const MyLibrary = () => {
         throw new Error("No valid selected book or missing book ID.");
       }
 
-      const bookCover = selectedBook.coverImage;
-      if (!bookId || typeof bookId !== "string" || !bookCover) {
-        throw new Error("Invalid Book ID or Missing Cover Image");
+      const bookCover = selectedBook?.coverImage;
+      const bookTitle = selectedBook?.title;
+      const bookAuthor = selectedBook?.author;
+
+      // Check if any of the required fields are missing
+      if (
+        !bookId ||
+        typeof bookId !== "string" ||
+        !bookCover ||
+        !bookTitle ||
+        !bookAuthor
+      ) {
+        throw new Error(
+          "Invalid Book ID, Missing Cover Image, Title or Author"
+        );
       }
 
       console.log("Attempting to add book to completed:", {
         bookId,
         bookCover,
-        title,
-        author,
+        bookTitle,
+        bookAuthor,
       });
 
-      const result = await addBookToCompleted(bookId, bookCover);
-
-      if (!result || !result.success) {
-        throw new Error(result.message || "Failed to add book to completed.");
-      }
+      const result = await addBookToCompleted(
+        bookId,
+        bookCover,
+        bookTitle,
+        bookAuthor
+      );
 
       console.log("Book added to completed list successfully:", result);
     } catch (error) {
@@ -539,12 +556,16 @@ const MyLibrary = () => {
 
                         {/* Render book ID */}
                         <div className="text-left">
-                          <p className="font-medium text-gray-900">
+                          {/* <p className="font-medium text-gray-900">
                             Book ID: {book.bookId}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Database ID: {book._id}
-                          </p>
+                          </p> */}
+                          {/* Title and Author under image */}
+                            <p className="text-sm font-semibold text-gray-800">
+                              {book.title}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {book.author}
+                            </p>
                         </div>
 
                         <button
@@ -673,9 +694,7 @@ const MyLibrary = () => {
                   Add to Current
                 </button>
                 <button
-                  onClick={() =>
-                    handleAddToCurrentFromPending(selectedBook._id)
-                  }
+                  onClick={() => handleAddToCompleteMyLibrary(selectedBook._id)}
                   className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 ml-4"
                 >
                   Add to Complete
