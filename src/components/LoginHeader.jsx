@@ -11,11 +11,11 @@ const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    console.log("User logged out");
     navigate("/");
 
   };
 
-  // Handle profile picture change
   const handleProfilePictureChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -34,7 +34,6 @@ const HeaderLoggedIn = ({ user, onLogout, updateUser }) => {
         }
       );
 
-      // Update the user's photoURL in the frontend
       if (response.data.user) {
         updateUser(response.data.user);
       }
