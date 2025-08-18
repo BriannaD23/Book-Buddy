@@ -11,7 +11,6 @@ import User from '../src/models/userModel.js';
 
 dotenv.config();
 
-// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB');
@@ -40,36 +39,3 @@ app.use("/api/users", libraryRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-// const updateCurrentBook = async () => {
-//   try {
-//     const users = await User.find();
-
-//     for (let user of users) {
-//       if (user.library?.current) {
-//         let updated = false;
-//         const current = user.library.current;
-
-//         if (!current.title || !current.author) {
-//           updated = true;
-//           user.library.current = {
-//             ...current,
-//             title: current.title || "Unknown Title",
-//             author: current.author || "Unknown Author",
-//           };
-//         }
-
-//         if (updated) {
-//           await user.save();
-//           console.log(`Updated user ${user._id}`);
-//         }
-//       }
-//     }
-
-//     console.log("Current book updated successfully.");
-//   } catch (error) {
-//     console.error("Error updating current book:", error);
-//   }
-// };
-
-// updateCurrentBook(); // Make sure this is called after defining it

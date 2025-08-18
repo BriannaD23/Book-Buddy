@@ -133,46 +133,36 @@ export const getLibrary = async () => {
   }
 };
 
-export const updateCurrentBookFromLibrary = async (bookId, coverImage,title, author) => {
+export const updateCurrentBookFromLibrary = async (
+  bookId,
+  coverImage,
+  title,
+  author,
+  pages,
+  progress,
+  startDate,
+  endDate
+) => {
   try {
     if (!bookId || !coverImage) {
       throw new Error("Missing required parameters: bookId or coverImage");
     }
 
     const decodedPayload = decodeTokenPayload();
-
     if (!decodedPayload?.userId) {
       throw new Error("No userId found in the token");
     }
-
     const { userId, token } = decodedPayload;
 
-    const responseCurrentBook = await fetch(`${API_URL}/${userId}/library/current`, {
-      method: "GET",  
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
-
-    if (!responseCurrentBook.ok) {
-      const errorText = await responseCurrentBook.text();
-      throw new Error(`Failed to fetch current book: ${errorText}`);
-    }
-
-    const currentBookData = await responseCurrentBook.json();
-
-    // If the user already has a current book, show an alert
-    if (currentBookData && currentBookData.bookId) {
-      alert("You can only have one book in your current list at a time.");
-      return;  // Exit the function
-    }
-
-    // If no current book, proceed to add the new one
     const currentBook = {
       bookId,
       coverImage,
       title,
-      author
+      author,
+      pages,
+      progress,
+      startDate,
+      endDate,
     };
 
     console.log("Prepared currentBook payload:", currentBook);
@@ -186,37 +176,28 @@ export const updateCurrentBookFromLibrary = async (bookId, coverImage,title, aut
       body: JSON.stringify(currentBook),
     });
 
-    console.log("Add to Pending API response status:", response.status);
-
     if (!response.ok) {
       const errorText = await response.text();
-      const data = JSON.parse(errorText);  // Assuming the error response contains a message
-      if (data.message === "You already have a book in your current list.") {
-        alert(data.message);  // Show message to user
-        return;
-      }
-      throw new Error(`Failed to add book to current: ${errorText}`);
+      throw new Error(`Failed to update current book: ${errorText}`);
     }
 
     const data = await response.json();
-    console.log("Book successfully added to current list:", data);
+    console.log("Book successfully updated in current list:", data);
 
     return data;
   } catch (error) {
-    console.error("Error adding book to current:", error.message);
-    alert(`Error: ${error.message}`);  // Display error message to user
+    console.error("Error updating current book:", error.message);
+    alert(`Error: ${error.message}`);
     throw error;
   }
 };
 
 export const addBookToCompleted = async (bookId, coverImage, title, author) => {
   try {
-    // Validate the input parameters
     if (!bookId || !coverImage || !title || !author) {
       throw new Error("Missing required parameters: bookId or coverImage");
     }
 
-    // Decode the token payload
     const decodedPayload = decodeTokenPayload();
     if (!decodedPayload?.userId) {
       throw new Error("No userId found in the token");
@@ -527,8 +508,6 @@ export const deleteCompletedBooks = async (_id) => {
     throw error;
   }
 };
-
-
 
 
 

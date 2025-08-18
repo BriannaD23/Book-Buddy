@@ -55,7 +55,6 @@ export const getLibrary = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Access mybooks inside user.library
     return res.status(200).json(user.library.mybooks);
   } catch (error) {
     console.error(error);
@@ -79,7 +78,6 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
       endDate,
     } = req.body;
 
-    // Check if the userId is valid
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid User ID" });
     }
@@ -89,7 +87,6 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Validate bookId and coverImage are provided
     if (!bookId || !coverImage || !title || !author) {
       return res.status(400).json({
         message:
@@ -97,25 +94,16 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
       });
     }
 
-    // Check if there is already a book in the current list
-    // if (user.library.current && Object.keys(user.library.current).length > 0) {
-    //   return res.status(400).json({ message: "You can only have one book in your current list at a time." });
-    // }
-
-    // Assign the new book to the current list
     user.library.current = {
       coverImage,
       title,
       author,
       bookId,
-      pages: pages || 0, // Default to 0 if not provided
-      progress: 0, // Always start at 0
-      startDate: new Date(), // Start now
+      pages: pages || 0, 
+      progress: 0, 
+      startDate: new Date(), 
       endDate: null,
     };
-
-    // Optionally, you could also remove the book from `mybooks` and/or `pending`
-    // user.library.mybooks = user.library.mybooks.filter(book => book.bookId !== bookId);
 
     console.log("User before save:", user);
 
@@ -126,7 +114,6 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
 
     console.log("Book added to current:", user.library.current);
 
-    // Respond with success
     res.status(200).json({
       message: "Book successfully added to current",
       currentBook: user.library.current,
@@ -148,13 +135,11 @@ export const addBookToPending = async (req, res) => {
       return res.status(400).json({ message: "Invalid User ID" });
     }
 
-    // Find the user in the database
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Validate the bookId and coverImage
     if (!bookId || !coverImage) {
       return res
         .status(400)
@@ -187,7 +172,6 @@ export const addBookToPending = async (req, res) => {
 
     console.log("Book added to pending:", pendingBook);
 
-    // Respond with success
     res.status(200).json({
       message: "Book successfully added to pending list.",
       pendingBook,
@@ -200,49 +184,6 @@ export const addBookToPending = async (req, res) => {
     });
   }
 };
-
-// export const addBookToCompleted = async (req, res) => {
-//   try {
-//     const { userId } = req.params;
-//     const { bookId, coverImage, title, author } = req.body;
-
-//     if (!mongoose.Types.ObjectId.isValid(userId) || !bookId) {
-//       return res.status(400).json({ message: "Invalid User ID or Book ID." });
-//     }
-
-//     const user = await User.findById(userId);
-//     if (!user) return res.status(404).json({ message: "User not found" });
-
-//     const book = user.library?.mybooks?.find((b) => b.bookId === bookId);
-//     if (!book)
-//       return res.status(404).json({ message: "Book not found in library." });
-
-//     user.library.completed = user.library.completed || [];
-
-//     if (user.library.completed.some((b) => b.bookId === bookId)) {
-//       return res.status(400).json({ message: "Book is already completed." });
-//     }
-
-//     const completedBook = {
-//       bookId: book.bookId,
-//       coverImage: coverImage,
-//       title: title || "Unknown Title",
-//       author: author || "Unknown Author",
-//     };
-
-//     user.library.completed.push(completedBook);
-//     await user.save();
-
-//     res
-//       .status(200)
-//       .json({ message: "Book added to completed list.", completedBook });
-//   } catch (error) {
-//     res.status(500).json({
-//       message: "Failed to add book to completed list.",
-//       error: error.message,
-//     });
-//   }
-// };
 
 export const addBookToCompleted = async (req, res) => {
   try {
@@ -307,18 +248,16 @@ export const getCurrentBook = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Fetch current book from the user's library
     const currentBook = user.library?.current || null;
 
-    // If there is no current book, send a response indicating that
+ 
     if (!currentBook) {
       return res.status(404).json({ message: "No current book found" });
     }
 
-    // Return the current book
     return res.status(200).json({
       message: "Current book retrieved successfully",
-      currentBook: currentBook, // Assuming it's an object, not an array
+      currentBook: currentBook, 
     });
   } catch (error) {
     console.error("Error fetching current book:", error.message);
@@ -328,23 +267,69 @@ export const getCurrentBook = async (req, res) => {
   }
 };
 
-// Controller to fetch pending books
-export const getPendingBooks = async (req, res) => {
+export const updateCurrentBook = async (req, res) => {
   try {
     const userId = req.params.userId;
+    const {
+      bookId,
+      coverImage,
+      title,
+      author,
+      pages,
+      progress,
+      startDate,
+      endDate,
+    } = req.body;
 
-    // Validate userId as a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid User ID" });
     }
 
-    // Find the user and populate the pending list
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if the user has any pending books
+    if (!user.library.current || user.library.current.bookId !== bookId) {
+      return res.status(404).json({ message: "Current book not found." });
+    }
+
+    user.library.current.coverImage = coverImage ?? user.library.current.coverImage;
+    user.library.current.title = title ?? user.library.current.title;
+    user.library.current.author = author ?? user.library.current.author;
+    user.library.current.pages = pages ?? user.library.current.pages;
+    user.library.current.progress = progress ?? user.library.current.progress;
+    user.library.current.startDate = startDate ?? user.library.current.startDate;
+    user.library.current.endDate = endDate ?? user.library.current.endDate;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Current book updated successfully",
+      currentBook: user.library.current,
+    });
+  } catch (error) {
+    console.error("Error updating current book:", error.message);
+    res.status(500).json({
+      message: "Failed to update current book",
+      error: error.message,
+    });
+  }
+};
+
+export const getPendingBooks = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid User ID" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const pendingBooks = user.library?.pending || [];
 
     if (pendingBooks.length === 0) {
@@ -399,7 +384,6 @@ export const deleteFromPending = async (req, res) => {
   const { userId, bookId } = req.params;
 
   try {
-    // Validate userId and bookId
     if (
       !mongoose.Types.ObjectId.isValid(userId) ||
       !mongoose.Types.ObjectId.isValid(bookId)
@@ -407,13 +391,11 @@ export const deleteFromPending = async (req, res) => {
       return res.status(400).json({ message: "Invalid User ID or Book ID." });
     }
 
-    // Fetch user and check existence
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Check if pending list exists and contains books
     const pendingBooks = user.library?.pending || [];
     const bookIndex = pendingBooks.findIndex(
       (book) => book._id.toString() === bookId
@@ -477,13 +459,11 @@ export const deleteMyLibraryBook = async (req, res) => {
 
     const removedBook = user.library.mybooks.splice(bookIndex, 1)[0];
 
-    // Save the updated user
     const savedUser = await user.save();
     if (!savedUser) {
       throw new Error("Failed to save user after removing book.");
     }
 
-    // Respond with success
     res.status(200).json({
       message: "Book successfully removed from My Library.",
       removedBook,
@@ -569,17 +549,15 @@ export const deleteCurrentBook = async (req, res) => {
         .json({ message: "Current book not found or does not match." });
     }
 
-    // Clear the bookId from the current book
     user.library.current.bookId = null;
     user.library.current.coverImage = null;
 
-    // Save the updated user document
     await user.save();
 
     res.status(200).json({
       message: "Current book successfully removed.",
-      removedBookId: bookId, // Optionally return the removed bookId
-      currentBook: user.library.current, // Return the updated current book structure
+      removedBookId: bookId, 
+      currentBook: user.library.current, 
     });
   } catch (error) {
     console.error("Error deleting current book:", error.message);

@@ -28,14 +28,12 @@ export const loginWithEmail = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Find the user by email
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if the password matches (use bcrypt for hashed passwords)
     const isPasswordValid = password === user.password; 
 
     if (!isPasswordValid) {
