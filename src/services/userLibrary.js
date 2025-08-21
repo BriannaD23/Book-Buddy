@@ -133,6 +133,56 @@ export const getLibrary = async () => {
   }
 };
 
+export const addBookToCurrentFromLibrary = async (
+  bookId,
+  coverImage,
+  title,
+  author,
+  pages,
+  progress,
+  startDate,
+  endDate
+) => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+    const { userId, token } = decodedPayload;
+
+    const currentBook = {
+      bookId,
+      coverImage,
+      title,
+      author,
+      pages,
+      progress,
+      startDate,
+      endDate,
+    };
+
+    const response = await fetch(`${API_URL}/${userId}/library/current`, {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(currentBook),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to add book to current: ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error adding book to current:", error.message);
+    throw error;
+  }
+};
+
 export const updateCurrentBookFromLibrary = async (
   bookId,
   coverImage,

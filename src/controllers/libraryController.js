@@ -21,7 +21,7 @@ export const addBookToLibrary = async (req, res) => {
     }
 
     const newBook = {
-      bookId, // Corrected variable name to bookId
+      bookId, 
       coverImage,
       title,
       author,
@@ -126,6 +126,39 @@ export const addBookToCurrentFromLibrary = async (req, res) => {
     });
   }
 };
+
+const handleAddCurrentToCompleted = async () => {
+  try {
+    if (!currentBook || !currentBook.bookId) {
+      throw new Error("No current book to add to completed.");
+    }
+
+    console.log("Adding current book to completed:", currentBook);
+
+    const result = await addBookToCompleted(
+      currentBook.bookId,
+      currentBook.coverImage,
+      currentBook.title,
+      currentBook.author
+    );
+
+    console.log("API response:", result);
+
+    if (result.success) {
+      setCurrentBook(null);
+      setIsEditing(false);
+      console.log("CurrentBook cleared after completing");
+
+      await loadCompleteLibrary();
+    } else {
+      throw new Error(result.message || "Failed to add current book to completed.");
+    }
+  } catch (error) {
+    console.error("Error moving current book to completed:", error);
+    alert(error.message);
+  }
+};
+
 
 export const addBookToPending = async (req, res) => {
   try {
@@ -281,6 +314,8 @@ export const updateCurrentBook = async (req, res) => {
       endDate,
     } = req.body;
 
+     console.log("Update body:", req.body);
+
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid User ID" });
     }
@@ -294,13 +329,13 @@ export const updateCurrentBook = async (req, res) => {
       return res.status(404).json({ message: "Current book not found." });
     }
 
-    user.library.current.coverImage = coverImage ?? user.library.current.coverImage;
-    user.library.current.title = title ?? user.library.current.title;
-    user.library.current.author = author ?? user.library.current.author;
-    user.library.current.pages = pages ?? user.library.current.pages;
-    user.library.current.progress = progress ?? user.library.current.progress;
-    user.library.current.startDate = startDate ?? user.library.current.startDate;
-    user.library.current.endDate = endDate ?? user.library.current.endDate;
+  user.library.current.coverImage = coverImage ?? user.library.current.coverImage;
+  user.library.current.title = title ?? user.library.current.title;
+  user.library.current.author = author ?? user.library.current.author;
+  user.library.current.pages = (pages !== undefined && pages !== null && pages !== "") ? Number(pages) : user.library.current.pages;
+  user.library.current.progress = (progress !== undefined && progress !== null && progress !== "") ? Number(progress) : user.library.current.progress;
+  user.library.current.startDate = startDate ?? user.library.current.startDate;
+  user.library.current.endDate = endDate ?? user.library.current.endDate;
 
     await user.save();
 

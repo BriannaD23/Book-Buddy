@@ -6,6 +6,7 @@ import {
   deletePendingBook,
   deleteMyLibraryBook,
   updateCurrentBookFromLibrary,
+  addBookToCurrentFromLibrary,
   fetchCurrentBookFromLibrary,
   deleteCurrentBook,
   addBookToCompleted,
@@ -20,6 +21,7 @@ const MyLibrary = () => {
   const [completedBooks, setCompletedBooks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showPendingModal, setShowPendingModal] = useState(false);
+  const [goal, setGoal] = useState(0);
   const [showCompletedModal, setShowCompletedModal] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [pendingBooks, setPendingBooks] = useState([]);
@@ -37,7 +39,7 @@ const MyLibrary = () => {
       try {
         setLoading(true);
         const library = await getLibrary();
-        console.log("Loaded Library:", library);
+
         setBooks(library);
         setCompletedBooks(library.completedBooks || []);
         setPendingBooks(library.pendingBooks || []);
@@ -45,18 +47,17 @@ const MyLibrary = () => {
         setSelectedBook(library.selectedBook || null);
 
         const current = await fetchCurrentBookFromLibrary();
-        console.log("Fetched Current Book:", current);
+
         setCurrentBook(current);
 
         const completed = await fetchCompletedBooks();
-        console.log("Fetched Completed Book:", completed);
+
         setCompletedBooks(completed);
 
         const pending = await fetchPendingBooks();
-        console.log("Fetched Pending Books:", pending);
+
         setPendingBooks(pending);
       } catch (err) {
-        console.error("Error loading library:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -66,32 +67,59 @@ const MyLibrary = () => {
     loadLibrary();
   }, []);
 
+  useEffect(() => {
+    if (isEditing && currentBook) {
+      setBookDetails({
+        bookId: currentBook._id || currentBook.bookId || "",
+        coverImage: currentBook.coverImage || "",
+        title: currentBook.title || "",
+        author: currentBook.author || "",
+        pages: currentBook.pages || "",
+        progress: currentBook.progress ?? 0,
+        startDate: currentBook.startDate
+          ? new Date(currentBook.startDate).toISOString().split("T")[0]
+          : "",
+        endDate: currentBook.endDate
+          ? new Date(currentBook.endDate).toISOString().split("T")[0]
+          : "",
+      });
+    } else {
+      // Clear the form if not editing
+      setBookDetails({
+        bookId: "",
+        coverImage: "",
+        title: "",
+        author: "",
+        pages: "",
+        progress: 0,
+        startDate: "",
+        endDate: "",
+      });
+    }
+  }, [isEditing, currentBook]);
+
   const handleBookClick = (bookId) => {
     const book = books.find((b) => b._id === bookId);
     if (book) {
-      console.log("Found Book:", book);
       setSelectedBook(book);
       setShowModal(true);
     } else {
-      console.log("Book not found with ID:", bookId);
     }
   };
 
   const handlePendingBookClick = (bookId) => {
     const book = pendingBooks.find((b) => b._id === bookId);
     if (book) {
-      console.log("Found Pending Book:", book);
       setSelectedBook(book);
       setShowPendingModal(true);
     } else {
-      console.log("Pending book not found with ID:", bookId);
     }
   };
 
   const handleAddToPending = async (bookId) => {
     try {
       const bookCover = selectedBook?.coverImage;
-      const bookTitle = selectedBook?.title; // Get the title
+      const bookTitle = selectedBook?.title;
       const bookAuthor = selectedBook?.author;
       const result = await addBookToPending(
         bookId,
@@ -99,46 +127,32 @@ const MyLibrary = () => {
         bookTitle,
         bookAuthor
       );
-      console.log("Book added to pending list:", result);
 
       setPendingBooks((prevPendingBooks) => [
         ...prevPendingBooks,
         result.pendingBook,
       ]);
-    } catch (error) {
-      console.error("Failed to add book to pending:", error);
-    }
+    } catch (error) {}
   };
 
   const handleAddToCompleteMyLibrary = async (bookId) => {
     try {
-      if (!selectedBook || !selectedBook._id) {
-        throw new Error("No valid selected book or missing book ID.");
+      // Use selectedBook if set, otherwise fallback to currentBook
+      const book = selectedBook || currentBook;
+
+      if (!book || !book.bookId) {
+        throw new Error("No valid book or missing book ID.");
       }
 
-      const bookCover = selectedBook?.coverImage;
-      const bookTitle = selectedBook?.title;
-      const bookAuthor = selectedBook?.author;
+      const bookCover = book.coverImage;
+      const bookTitle = book.title;
+      const bookAuthor = book.author;
 
-      // Check if any of the required fields are missing
-      if (
-        !bookId ||
-        typeof bookId !== "string" ||
-        !bookCover ||
-        !bookTitle ||
-        !bookAuthor
-      ) {
+      if (!bookId || !bookCover || !bookTitle || !bookAuthor) {
         throw new Error(
           "Invalid Book ID, Missing Cover Image, Title or Author"
         );
       }
-
-      console.log("Attempting to add book to completed:", {
-        bookId,
-        bookCover,
-        bookTitle,
-        bookAuthor,
-      });
 
       const result = await addBookToCompleted(
         bookId,
@@ -147,7 +161,7 @@ const MyLibrary = () => {
         bookAuthor
       );
 
-      console.log("Book added to completed list successfully:", result);
+      console.log("Book added to completed:", result);
     } catch (error) {
       console.error("Error adding book to completed:", error.message);
     }
@@ -158,10 +172,9 @@ const MyLibrary = () => {
       setLoading(true);
 
       const completed = await fetchCompletedBooks();
-      console.log("Fetched Completed Books:", completed); // Ensure this logs the correct data
+
       setCompletedBooks(completed || []);
     } catch (err) {
-      console.error("Error loading completed books:", err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -174,24 +187,19 @@ const MyLibrary = () => {
       const bookTitle = selectedBook?.title;
       const bookAuthor = selectedBook?.author;
 
-      // Ensure that title and author are passed along with bookId and coverImage
-      const result = await updateCurrentBookFromLibrary(
+      const result = await addBookToCurrentFromLibrary(
         bookId,
         bookCover,
         bookTitle,
         bookAuthor
       );
-      console.log("Book added to current:", result);
 
       setCurrentBook(result);
 
       const current = await fetchCurrentBookFromLibrary();
-      console.log("Fetched Current Book:", current);
 
       setCurrentBook(current);
-    } catch (error) {
-      console.error("Failed to add book to current:", error);
-    }
+    } catch (error) {}
   };
 
   const handleDeleteCurrentBook = async (bookId) => {
@@ -199,89 +207,94 @@ const MyLibrary = () => {
       const result = await deleteCurrentBook(bookId);
 
       if (result.success) {
-        console.log("Deleted current book:", result.currentBook);
-        setCurrentBook(result.currentBook);
+        setCurrentBook(null);
+        setIsEditing(false);
       } else {
         throw new Error(result.message);
       }
     } catch (error) {
-      console.error("Failed to delete current book:", error);
+      console.error("Error deleting current book:", error);
     }
   };
 
   // --------------------------- current book from library--------------------//
 
   const handleDeletePendingBook = async (_id) => {
-    console.log("handleDeletePendingBook triggered with _id:", _id); // Debug
-
     try {
       const result = await deletePendingBook(_id);
-      console.log("Deleted pending book:", result);
 
       setPendingBooks((prevPendingBooks) =>
         prevPendingBooks.filter((book) => book._id !== _id)
       );
-    } catch (error) {
-      console.error("Failed to delete pending book:", error);
-    }
+    } catch (error) {}
   };
 
   const handleDeleteCompletedBook = async (_id) => {
-    console.log("Deleted Completed book with _id:", _id); // Debug
-
     try {
       const result = await deleteCompletedBooks(_id);
-      console.log("Deleted completed book:", result);
 
       setCompletedBooks((prevCompletedBooks) =>
         prevCompletedBooks.filter((book) => book._id !== _id)
       );
-    } catch (error) {
-      console.error("Failed to delete completed book:", error);
-    }
+    } catch (error) {}
   };
 
   const handleDeleteMyLibraryBook = async (_id) => {
-    console.log(`Deleting book with ID: ${_id}`);
-
     try {
       const result = await deleteMyLibraryBook(_id);
-      console.log("Deleted library book:", result);
 
       setBooks((prevLibraryBooks) =>
         prevLibraryBooks.filter((book) => book._id !== _id)
       );
-    } catch (error) {
-      console.error("Failed to delete library book:", error);
-    }
+    } catch (error) {}
   };
 
   const [bookDetails, setBookDetails] = useState({
-    title: "Book Title",
-    author: "Author Name",
-    pages: "Total Pages",
-    progress: "Progress",
+    title: "",
+    author: "",
+    pages: "",
+    progress: 0,
     startDate: "",
     endDate: "",
   });
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setBookDetails({
       ...bookDetails,
-      [e.target.name]: e.target.value,
+      [name]: name === "progress" || name === "pages" ? Number(value) : value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Book details submitted:", bookDetails);
-    setIsEditing(false);
+    try {
+      const result = await updateCurrentBookFromLibrary(
+        bookDetails.bookId || currentBook?._id || currentBook?.bookId,
+        bookDetails.coverImage || currentBook?.coverImage,
+        bookDetails.title,
+        bookDetails.author,
+        bookDetails.pages,
+        bookDetails.progress,
+        bookDetails.startDate,
+        bookDetails.endDate
+      );
+      const updatedBook = result.currentBook || result;
+      if (updatedBook && (updatedBook._id || updatedBook.bookId)) {
+        setCurrentBook(updatedBook);
+      } else {
+        setCurrentBook(currentBook);
+      }
+      setIsEditing(false);
+    } catch (error) {
+      setError("Failed to save current book");
+      console.error(error);
+    }
   };
-
   useEffect(() => {
     const loadCompletedBooks = async () => {
       const completed = await fetchCompletedBooks();
-      console.log("Fetched Completed Books:", completed); // Log to check
+      console.log("Fetched Completed Books:", completed);
       setCompletedBooks(completed);
     };
     loadCompletedBooks();
@@ -349,7 +362,10 @@ const MyLibrary = () => {
               Edit
             </button>
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                setSelectedBook(currentBook); // set selectedBook to currentBook
+                handleAddToCompleteMyLibrary(currentBook.bookId);
+              }}
               className="bg-green-500 text-white px-4 py-2 rounded-lg"
             >
               Add
@@ -411,7 +427,7 @@ const MyLibrary = () => {
                   <input
                     type="number"
                     name="progress"
-                    value={bookDetails.progress}
+                    value={bookDetails.progress || ""}
                     onChange={handleChange}
                     className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -495,7 +511,7 @@ const MyLibrary = () => {
                 fill="none"
                 strokeDasharray={`${
                   completedBooks.length > 0
-                    ? (completedBooks.length / totalBooks) * 565 // Circumference of the circle
+                    ? (completedBooks.length / goal) * 565
                     : 0
                 } 565`}
                 strokeDashoffset="25"
@@ -511,10 +527,23 @@ const MyLibrary = () => {
                 className="font-semibold text-lg"
               >
                 {completedBooks.length > 0
-                  ? `${completedBooks.length}/${totalBooks}`
-                  : "No Books"}
+                  ? `${completedBooks.length}/${goal}`
+                  : `0/${goal}`}
               </text>
             </svg>
+          </div>
+
+          <div className="text-center mb-4">
+            <label className="text-gray-700 font-medium mr-2">
+              Set Reading Goal:
+            </label>
+            <input
+              type="number"
+              value={goal}
+              onChange={(e) => setGoal(Number(e.target.value))}
+              className="border p-1 rounded w-20 text-center"
+              min="0"
+            />
           </div>
           {/* "View Completed Books" Link */}
           <div className="text-center mt-4">
@@ -560,12 +589,10 @@ const MyLibrary = () => {
                             Book ID: {book.bookId}
                           </p> */}
                           {/* Title and Author under image */}
-                            <p className="text-sm font-semibold text-gray-800">
-                              {book.title}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {book.author}
-                            </p>
+                          <p className="text-sm font-semibold text-gray-800">
+                            {book.title}
+                          </p>
+                          <p className="text-xs text-gray-500">{book.author}</p>
                         </div>
 
                         <button
@@ -594,17 +621,13 @@ const MyLibrary = () => {
         </div>
       </div>
 
-      {/* Pending Books Section with Placeholder */}
       <div className="text-center mb-10">
         <h2 className="text-2xl font-semibold mb-4">Pending Reads</h2>
         <div className="relative">
-          {/* Left Solid Background */}
           <div className="absolute left-0 top-0 bottom-0 w-9 bg-white pointer-events-none z-40"></div>
 
-          {/* Right Solid Background */}
           <div className="absolute right-0 top-0 bottom-0 w-9 bg-white pointer-events-none z-40"></div>
 
-          {/* Left Arrow */}
           <button
             onClick={() =>
               sliderRef.current.scrollBy({ left: -200, behavior: "smooth" })
@@ -617,7 +640,6 @@ const MyLibrary = () => {
             />
           </button>
 
-          {/* Pending Books Slider */}
           <div
             ref={pendingSliderRef}
             className="book-slider flex overflow-x-scroll hide-scrollbar py-1 snap-x snap-mandatory scroll-smooth"
@@ -636,7 +658,6 @@ const MyLibrary = () => {
                         alt={book.title}
                         className="min-w-32 max-h-48 object-cover mt-3 mx-auto transition-all duration-300 ease-in-out rounded-lg shadow-lg border border-gray-200"
                       />
-                      {/* Hover buttons */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
                         <button
                           onClick={() => handlePendingBookClick(book._id)}
