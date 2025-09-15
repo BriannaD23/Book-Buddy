@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import {
   getLibrary,
+  updateGoal,
+  getGoal,
   addBookToPending,
   fetchPendingBooks,
   deletePendingBook,
@@ -97,6 +99,8 @@ const MyLibrary = () => {
       });
     }
   }, [isEditing, currentBook]);
+
+
 
   const handleBookClick = (bookId) => {
     const book = books.find((b) => b._id === bookId);
@@ -239,6 +243,15 @@ const MyLibrary = () => {
     } catch (error) {}
   };
 
+  const saveGoal = async () => {
+    try {
+      await updateGoal(goal);
+      alert("Goal saved!");
+    } catch (error) {
+      alert("Failed to save goal: " + error.message);
+    }
+  };
+
   const handleDeleteMyLibraryBook = async (_id) => {
     try {
       const result = await deleteMyLibraryBook(_id);
@@ -306,6 +319,21 @@ const MyLibrary = () => {
       loadCompleteLibrary();
     }
   };
+
+   
+  
+  useEffect(() => {
+  const fetchGoal = async () => {
+    try {
+      const savedGoal = await getGoal(); // no userId passed
+      setGoal(savedGoal);
+    } catch (err) {
+      console.error("Failed to fetch goal:", err.message);
+    }
+  };
+
+  fetchGoal();
+}, []);
 
   const totalBooks = completedBooks.length + pendingBooks.length;
 
@@ -544,6 +572,13 @@ const MyLibrary = () => {
               className="border p-1 rounded w-20 text-center"
               min="0"
             />
+
+            <button
+              onClick={saveGoal}
+              className="ml-2 px-3 py-1 bg-[#9B2D2D] text-white rounded hover:bg-[#7f2323]"
+            >
+              Save
+            </button>
           </div>
           {/* "View Completed Books" Link */}
           <div className="text-center mt-4">

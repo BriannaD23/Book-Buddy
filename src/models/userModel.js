@@ -4,6 +4,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String },
   firebaseUid: { type: String, required: false },
+  name: { type: String, default: "" },
+  photoURL: { type: String, default: "/default-avatar.png" },
   library: {
     mybooks: [
       {
@@ -35,11 +37,12 @@ const userSchema = new mongoose.Schema({
       {
         coverImage: { type: String },
         bookId: { type: String },
-        title: { type: String }, 
+        title: { type: String },
         author: { type: String },
         rating: { type: Number, min: 0, max: 5 },
       },
     ],
+    goal: { type: Number, default: 0 },
   },
 });
 

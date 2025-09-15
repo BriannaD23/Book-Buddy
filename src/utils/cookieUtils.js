@@ -12,7 +12,7 @@ export const decodeTokenPayload = () => {
     const decodedPayload = JSON.parse(atob(payloadBase64));
 
     // Log the decoded payload to inspect the structure
-    console.log("Decoded Token Payload:", decodedPayload);
+    // console.log("Decoded Token Payload:", decodedPayload);
 
     // Access the nested userId correctly
     const userId = decodedPayload.userId?.userId || null; // Access the nested userId

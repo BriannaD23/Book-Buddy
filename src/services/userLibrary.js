@@ -321,6 +321,78 @@ export const  fetchCompletedBooks = async () => {
   }
 };
 
+export const updateGoal = async (goal) => {
+  try {
+    const decodedPayload = decodeTokenPayload();
+
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+
+    console.log("Fetching library for userId:", userId);
+
+    const response = await fetch(`${API_URL}/${userId}/library/goal`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({goal})
+
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update goal');
+    }
+
+    const data = await response.json();
+    
+    
+    return data.goal;  
+  } catch (error) {
+    console.error('Error fetching pending books:', error.message);
+    throw error;
+  }
+};
+
+export const getGoal = async () => {
+  try {
+    const decodedPayload = decodeTokenPayload(); 
+    if (!decodedPayload?.userId) {
+      throw new Error("No userId found in the token");
+    }
+
+    const { userId, token } = decodedPayload;
+    console.log("Decoded payload get goal:", decodedPayload);
+
+    console.log("Fetching goal for userId:", userId);
+
+    const response = await fetch(`${API_URL}/${userId}/library/goal`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch goal");
+    }
+
+    const data = await response.json();
+    console.log("Backend returned:", data);
+    return data.goal ?? 0; 
+  } catch (error) {
+    console.error("Error fetching goal:", error.message);
+    throw error;
+  }
+};
+
+
 
 
 
