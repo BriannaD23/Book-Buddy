@@ -352,19 +352,23 @@ const MyLibrary = () => {
           <div className="relative flex justify-center items-center">
             {currentBook?.coverImage ? (
               <div className="relative group flex flex-col items-center">
-                <img
-                  src={currentBook.coverImage}
-                  alt="Book Cover"
-                  className="w-32 h-48 object-cover rounded-lg"
-                />
+                <div className="relative group">
 
-                {/* Delete button */}
-                <button
-                  onClick={() => handleDeleteCurrentBook(currentBook.bookId)}
-                  className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-semibold opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
-                >
-                  Delete Book
-                </button>
+                  <img
+                    src={currentBook.coverImage}
+                    alt="Book Cover"
+                    className="w-32 h-48 object-cover rounded-lg"
+                  />
+
+                  {/* Delete button */}
+                  <button
+                    onClick={() => handleDeleteCurrentBook(currentBook.bookId)}
+                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-semibold opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                  >
+                    Delete Book
+                  </button>
+                </div>
+              
 
                 {/* Book Title and Author */}
                 <div className="mt-2 text-center">
@@ -385,7 +389,7 @@ const MyLibrary = () => {
           <div className="flex justify-between mt-4">
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+              className="bg-[#EAD298] ] text-[#7f2323] px-4 py-2 rounded-lg"
             >
               Edit
             </button>
@@ -394,9 +398,9 @@ const MyLibrary = () => {
                 setSelectedBook(currentBook); // set selectedBook to currentBook
                 handleAddToCompleteMyLibrary(currentBook.bookId);
               }}
-              className="bg-green-500 text-white px-4 py-2 rounded-lg"
+              className="bg-[#EAD298] text-[#7f2323] px-4 py-2 rounded-lg"
             >
-              Add
+              Add to Completed
             </button>
           </div>
         </div>
@@ -512,7 +516,7 @@ const MyLibrary = () => {
           <h2 className="text-2xl font-semibold mb-4 text-[#9B2D2D] text-center">
             Completed Books
           </h2>
-          <div className="relative flex justify-center items-center">
+          <div className="relative flex justify-center items-center mb-7">
             {/* Circular Progress Ring */}
             <svg
               width="160"
@@ -534,7 +538,7 @@ const MyLibrary = () => {
                 cx="100"
                 cy="100"
                 r="90"
-                stroke="#4caf50"
+                stroke="#7f2323"
                 strokeWidth="15"
                 fill="none"
                 strokeDasharray={`${
@@ -575,7 +579,7 @@ const MyLibrary = () => {
 
             <button
               onClick={saveGoal}
-              className="ml-2 px-3 py-1 bg-[#9B2D2D] text-white rounded hover:bg-[#7f2323]"
+              className="ml-2 px-3 py-1 bg-[#EAD298] text-[#7f2323] rounded hover:bg-[#7f2323] "
             >
               Save
             </button>

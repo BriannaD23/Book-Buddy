@@ -114,7 +114,7 @@ const DiscoverPage = () => {
                   style={{ paddingLeft: "40px", paddingRight: "10px" }}
                 >
                   {booksByGenre[genre].map((book) => (
-                    <div className="w-36  md:w-48 flex-shrink-0 text-center">
+                    <div className="w-36   flex-shrink-0 text-center">
                       <div className="w-32 h-48 snap-center  mx-1 mt-3 relative overflow-hidden rounded-lg shadow-lg border border-gray-200">
                         {book.volumeInfo.imageLinks?.thumbnail ? (
                           <img
