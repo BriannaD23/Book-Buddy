@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight , faArrowLeft  } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 <FontAwesomeIcon icon="fa-solid fa-arrow-right" />;
 
@@ -9,9 +9,11 @@ const DiscoverPage = () => {
   const [loading, setLoading] = useState(false);
   const [loadingGenre, setLoadingGenre] = useState("");
   const [error, setError] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
   const scrollRef = useRef({});
 
   const GENRES = ["manga", "self-help", "fantasy", "drama", "nonfiction"];
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const fetchBooksByGenre = async (genre, maxResults = 10) => {
     try {
@@ -34,20 +36,25 @@ const DiscoverPage = () => {
 
   useEffect(() => {
     const loadBooksByGenre = async () => {
+      if (isFetching) return;
+      setIsFetching(true);
+      setLoading(true);
       for (const genre of GENRES) {
         try {
-          setLoading(true);
           setLoadingGenre(genre);
 
           const books = await fetchBooksByGenre(genre, 10);
           setBooksByGenre((prev) => ({ ...prev, [genre]: books }));
+          await delay(300);
         } catch (err) {
           console.error(`Error loading books for genre: ${genre}`);
         } finally {
           setLoadingGenre("");
-          setLoading(false);
         }
       }
+
+      setLoading(false);
+      setIsFetching(false);
     };
 
     loadBooksByGenre();
@@ -96,55 +103,60 @@ const DiscoverPage = () => {
             ) : booksByGenre[genre]?.length > 0 ? (
               <div className="relative">
                 {/* Left Solid Background */}
-                <div className="absolute left-0 top-0 bottom-0 w-4 bg-white pointer-events-none z-40"></div>
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-white pointer-events-none z-40"></div>
 
                 {/* Right Solid Background */}
-                <div className="absolute right-0 top-0 bottom-0 w-4 bg-white pointer-events-none z-40"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-white pointer-events-none z-40"></div>
 
                 <div
                   ref={(el) => (scrollRef.current[genre] = el)}
-                  className="flex gap-4 hide-scrollbar"
-                  style={{ overflowX: "auto", paddingLeft: "20px" }}
+                  className="book-slider flex overflow-x-scroll hide-scrollbar py-1 snap-x snap-mandatory scroll-smooth"
+                  style={{ paddingLeft: "40px", paddingRight: "10px" }}
                 >
                   {booksByGenre[genre].map((book) => (
-                    <div
-                      key={book.id}
-                      className="w-40 flex-shrink-0 text-center"
-                    >
-                      {book.volumeInfo.imageLinks?.thumbnail ? (
-                        <img
-                          src={book.volumeInfo.imageLinks.thumbnail}
-                          alt={book.volumeInfo.title}
-                          className="rounded-lg mb-2 w-32 h-48 object-cover"
-                        />
-                      ) : (
-                        <div className="w-32 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                          No Image
-                        </div>
-                      )}
-                      <p className="text-sm font-medium">
+                    <div className="w-36  md:w-48 flex-shrink-0 text-center">
+                      <div className="w-32 h-48 snap-center  mx-1 mt-3 relative overflow-hidden rounded-lg shadow-lg border border-gray-200">
+                        {book.volumeInfo.imageLinks?.thumbnail ? (
+                          <img
+                            src={book.volumeInfo.imageLinks.thumbnail}
+                            alt={book.volumeInfo.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                            No Image
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-sm font-medium mt-2 h-10 overflow-hidden text-ellipsis">
                         {book.volumeInfo.title}
                       </p>
                     </div>
                   ))}
                 </div>
                 {/* Left Arrow */}
-               
+
                 <button
                   onClick={() => handleScroll(genre, "left")}
-                  className="absolute top-1/2 -left-3 transform -translate-y-1/2 text-white bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
+                  className="absolute top-1/2 left-1 transform -translate-y-1/2 bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
                   disabled={loadingGenre === genre}
                 >
-                  <FontAwesomeIcon icon={faArrowLeft} className="text-lg  text-[#9B2D2D]" />
+                  <FontAwesomeIcon
+                    icon={faArrowLeft}
+                    className="text-lg  text-[#9B2D2D]"
+                  />
                 </button>
 
                 {/* Right Arrow */}
                 <button
                   onClick={() => handleScroll(genre, "right")}
-                  className="absolute top-1/2 -right-3 transform -translate-y-1/2 text-white bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
+                  className="absolute top-1/2 right-1 transform -translate-y-1/2 text-white bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
                   disabled={loadingGenre === genre}
                 >
-                  <FontAwesomeIcon icon={faArrowRight} className="text-lg text-[#9B2D2D]" />
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className="text-lg text-[#9B2D2D]"
+                  />
                 </button>
               </div>
             ) : (
