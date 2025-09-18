@@ -16,7 +16,7 @@ import {
   deleteCompletedBooks,
 } from "../services/userLibrary.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faArrowLeft, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const MyLibrary = () => {
   const [books, setBooks] = useState([]);
@@ -386,21 +386,22 @@ const MyLibrary = () => {
           </div>
           {/* Buttons to add or edit book details */}
 
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-center gap-4 mt-4">
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-[#EAD298] ] text-[#7f2323] px-4 py-2 rounded-lg"
+              className="bg-[#a83d3d] text-[#EAD298] px-4 py-2 rounded-lg"
             >
-              Edit
+                <FontAwesomeIcon icon={faEdit} />
+
             </button>
             <button
               onClick={() => {
                 setSelectedBook(currentBook); // set selectedBook to currentBook
                 handleAddToCompleteMyLibrary(currentBook.bookId);
               }}
-              className="bg-[#EAD298] text-[#7f2323] px-4 py-2 rounded-lg"
+              className="bg-[#a83d3d] text-[#EAD298] px-4 py-2 rounded-lg"
             >
-              Add to Completed
+              <FontAwesomeIcon icon={faCheck} />
             </button>
           </div>
         </div>
@@ -538,7 +539,7 @@ const MyLibrary = () => {
                 cx="100"
                 cy="100"
                 r="90"
-                stroke="#7f2323"
+                stroke="#a83d3d"
                 strokeWidth="15"
                 fill="none"
                 strokeDasharray={`${
@@ -579,7 +580,7 @@ const MyLibrary = () => {
 
             <button
               onClick={saveGoal}
-              className="ml-2 px-3 py-1 bg-[#EAD298] text-[#7f2323] rounded hover:bg-[#7f2323] "
+              className="ml-2 px-3 py-1 bg-[#a83d3d] text-[#EAD298] rounded hover:bg-[#7f2323] "
             >
               Save
             </button>
@@ -671,7 +672,7 @@ const MyLibrary = () => {
             onClick={() =>
               sliderRef.current.scrollBy({ left: -200, behavior: "smooth" })
             }
-            className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-[#9B2D2D] text-white bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
+            className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-[#9B2D2D] text-white bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-40"
           >
             <FontAwesomeIcon
               icon={faArrowLeft}
@@ -733,7 +734,7 @@ const MyLibrary = () => {
                 behavior: "smooth",
               })
             }
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 text-[#9B2D2D] bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 text-[#9B2D2D] bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-40"
           >
             <FontAwesomeIcon
               icon={faArrowRight}
@@ -743,8 +744,8 @@ const MyLibrary = () => {
         </div>
         
         {showPendingModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 ">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96 mx-5">
               <h2 className="text-2xl mb-4 text-[#9B2D2D]">Add book to list</h2>
               <p>Would you like to add this book to your list?</p>
               <div className="mt-4">
@@ -793,7 +794,7 @@ const MyLibrary = () => {
               onClick={() =>
                 sliderRef.current.scrollBy({ left: -200, behavior: "smooth" })
               }
-              className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-[#9B2D2D] text-white bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
+              className="absolute top-1/2 left-3 transform -translate-y-1/2 bg-[#9B2D2D] text-white bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-40"
             >
               <FontAwesomeIcon
                 icon={faArrowLeft}
@@ -855,7 +856,7 @@ const MyLibrary = () => {
               onClick={() =>
                 sliderRef.current.scrollBy({ left: 200, behavior: "smooth" })
               }
-              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-[#9B2D2D] bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-50"
+              className="absolute top-1/2 right-4 transform -translate-y-1/2 text-[#9B2D2D] bg-[#EAD298] p-3 px-3 rounded-md shadow-lg hover:shadow-2xl transition-shadow duration-300 z-40"
             >
               <FontAwesomeIcon
                 icon={faArrowRight}
@@ -868,7 +869,7 @@ const MyLibrary = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-2xl mb-4 text-[#9B2D2D]">Add book to list</h2>
+            <h2 className="text-2xl mb-4 text-[#9B2D2D] ">Add book to list</h2>
             <p>Would you like to add this book to your list?</p>
             <div className="mt-4">
               <button

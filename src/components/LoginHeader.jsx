@@ -3,7 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/images/bookbuddy.png";
 import Usericon from "../assets/images/user.png";
 import { FaBars, FaUserCircle } from "react-icons/fa";
-import { updateProfilePic, getUserProfile } from "../services/userService.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  updateProfilePic,
+  getUserProfile,
+  updateName,
+} from "../services/userService.js";
 
 const HeaderLoggedIn = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -11,6 +17,7 @@ const HeaderLoggedIn = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
+  const [tempName, setTempName] = useState(user?.name || "");
   const [tempProfilePic, setTempProfilePic] = useState(Usericon);
   const navigate = useNavigate();
 
@@ -44,13 +51,23 @@ const HeaderLoggedIn = () => {
     }
   };
 
+  const saveName = async () => {
+    try {
+      await updateName(user._id, tempName);
+      setUser({ ...user, name: tempName });
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Error updating name:", err);
+    }
+  };
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
         const userData = await getUserProfile();
         setUser(userData);
         setTempProfilePic(userData?.photoURL || Usericon);
-        setName(userData?.name || "");
+        setTempName(userData?.name || "");
       } catch (err) {
         console.error(err.message);
       }
@@ -59,7 +76,7 @@ const HeaderLoggedIn = () => {
   }, []);
   return (
     <>
-      <header className="bg-[#EAD298] text-white px-2 py-2 md:px-4 md:py-2 relative ">
+      <header className="bg-[#EAD298] relative text-white px-2 py-2 md:px-4 md:py-2 relative ">
         <div className="flex justify-between items-center  w-full">
           <div className=" md:hidden flex-shrink-0 mt-2">
             {/* Mobile Hamburger - left */}
@@ -103,25 +120,37 @@ const HeaderLoggedIn = () => {
           </div>
 
           {/* Profile Icon - Right */}
-          <div className="relative ml-6">
+          <div className="ml-6">
             <button
               onClick={() => {
                 setIsDropdownOpen(!isDropdownOpen);
-                setIsMobileMenuOpen(false); // close mobile menu
+                setIsMobileMenuOpen(false);
               }}
               className="flex items-center gap-2"
             >
               <img
                 src={user?.photoURL || Usericon}
                 alt="Profile"
-                className="w-10 h-10 rounded-full object-cover border-2 border-black"
+                className="w-10 h-10   rounded-full object-cover border-2 border-black"
               />
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 bg-white text-black rounded shadow-lg w-40 z-50">
+              <div className="absolute right-0 mt-2 bg-white text-black rounded  rounded-tr-none shadow-lg w-40 z-5 ">
+
                 <ul>
+
+              <div className="mb-4">
+                <button
+                      onClick={() =>  setIsDropdownOpen(false)} // or your close handler
+                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 "
+                      aria-label="Close"
+                    >
+                      <FontAwesomeIcon icon={faTimes} size="lg" />
+                    </button>
+                  </div>
                   <li>
+                   
                     <button
                       className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                       onClick={() => setIsModalOpen(true)}
@@ -205,15 +234,18 @@ const HeaderLoggedIn = () => {
             <input
               type="text"
               placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={tempName}
+              onChange={(e) => setTempName(e.target.value)}
               className="w-full border p-2 rounded mb-4"
             />
 
             <div className="flex justify-end gap-2">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={saveProfile}
+                onClick={() => {
+                  saveProfile();
+                  saveName();
+                }}
               >
                 Save
               </button>

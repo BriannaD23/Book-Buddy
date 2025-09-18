@@ -35,9 +35,39 @@ export const updateProfilePic = async (userId, photoURL) => {
     }
 
     const data = await response.json();
-    return data.user; // return the updated user object
+    return data.user; 
   } catch (error) {
     console.error("Error updating profile pic:", error.message);
     throw error;
   }
 };
+
+
+
+export const updateName = async (userId, name) => {
+  try {
+    const token = decodeTokenPayload()?.token; 
+    if (!token) throw new Error("No token found");
+
+    const response = await fetch(`${API_URL}/${userId}/name`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name }), 
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to update name: ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.user; 
+  } catch (error) {
+    console.error("Error updating name:", error.message);
+    throw error;
+  }
+};
+

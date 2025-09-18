@@ -46,3 +46,31 @@ export const getUserById = async (req, res) => {
 };
 
 
+
+
+export const updateName = async (req, res) => {
+  try {
+    const { userId } = req.params;      
+    const { name } = req.body;     
+
+    if (!name) {
+      return res.status(400).json({ success: false, message: "name is required" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { name } },
+      { new: true }                     
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, user: updatedUser });
+  } catch (err) {
+    console.error("Error updating profile name:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
