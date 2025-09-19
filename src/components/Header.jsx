@@ -8,7 +8,7 @@ const Header = ({ isLoggedIn }) => {
 
   return (
     <>
-      <header className="bg-[#EAD298] relative text-white px-2 py-2 md:px-4 md:py-2">
+      <header className="bg-[#EAD298] relative text-white px-9 py-2 md:px-4 md:py-4">
         <div className="flex justify-between items-center w-full">
           {/* Mobile Hamburger - Left */}
           <div className="md:hidden flex-shrink-0 mt-2">
