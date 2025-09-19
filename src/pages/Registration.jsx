@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, provider } from "../../backend/firebaseConfig.js";
+import { auth, provider } from "../firebaseConfig.js";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import googleIcon from "../assets/images/google-icon.png";
 import "../styles/Loginpage.css";
