@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import admin from "firebase-admin";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
@@ -12,6 +13,15 @@ import axios from "axios";
 import User from "../src/models/userModel.js";
 
 dotenv.config();
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
 
 mongoose
   .connect(process.env.MONGODB_URI)
