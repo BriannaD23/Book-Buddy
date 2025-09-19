@@ -41,27 +41,25 @@ const router = createBrowserRouter([
   },
   {
     path: "/mylibrary",
-    element:( 
-    <> 
-    <LoginHeader />
-    <MyLibraryPage />
-    <Footer />
-    </>
-  
-    
-    )
+    element: (
+      <>
+        <LoginHeader />
+        <MyLibraryPage />
+        <Footer />
+      </>
+    ),
   },
   {
     path: "/discoverpage",
-    element: 
-    (
-      <>
-      <LoginHeader />
-      <DiscoverPage />,
-      <Footer />
-      </>
-    )
-   
+    element: (
+      <div className="min-h-screen flex flex-col">
+        <LoginHeader />
+        <div className="flex-1">
+          <DiscoverPage />
+        </div>
+        <Footer />
+      </div>
+    ),
   },
 ]);
 

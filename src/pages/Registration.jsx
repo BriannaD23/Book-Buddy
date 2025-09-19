@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, provider } from "../../backend/firebaseConfig.js";
+import { auth, provider } from "../firebaseConfig.js";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import googleIcon from "../assets/images/google-icon.png";
 import "../styles/Loginpage.css";
@@ -28,7 +28,7 @@ const Register = () => {
 
       const token = await user.getIdToken();
 
-      const response = await fetch("http://localhost:5000/api/auth/google", {
+      const response = await fetch("http://localhost:5001/api/auth/google", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const Register = () => {
     }
   
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch("http://localhost:5001/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

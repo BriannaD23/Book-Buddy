@@ -4,16 +4,13 @@ import { registerOrLoginWithGoogle} from "../controllers/authController.js";
 import { registerWithEmail} from "../controllers/regEmailPassAuth.js";  
 import { loginWithEmail} from "../controllers/regEmailPassAuth.js";  
 import { getUserById } from "../controllers/userController.js";
-import { authenticateUser } from "../middleware/authMiddleware.js"; // Import middleware
-
+import { authenticateUser } from "../middleware/authMiddleware.js"; 
 
 const router = express.Router();
 
 // Routes for email/password authentication
 router.post("/register", registerWithEmail);
 router.post("/login", loginWithEmail);
-
-// Route for Google authentication
 router.post("/google", registerOrLoginWithGoogle);
 
 

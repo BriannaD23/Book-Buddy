@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { auth, provider } from "../../backend/firebaseConfig.js";
+import { auth, provider } from "../firebaseConfig.js";
 import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import googleIcon from "../assets/images/google-icon.png";
@@ -29,7 +29,7 @@ const Login = () => {
 
       const token = await user.getIdToken();
 
-      const response = await fetch("http://localhost:5000/api/auth/google", {
+      const response = await fetch("http://localhost:5001/api/auth/google", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch("http://localhost:5001/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
