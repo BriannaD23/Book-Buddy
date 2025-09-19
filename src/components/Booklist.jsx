@@ -36,12 +36,12 @@ const BookList = ({ books }) => {
             />
 
             {/* Optional Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-20 z-40"></div>
+            <div className="absolute inset-0 bg-gradient-to-b  from-transparent to-black opacity-20 z-40"></div>
 
             {/* More Info Button */}
             <button
               onClick={() => handleBookClick(book.id)}
-              className="absolute inset-0 flex items-center justify-center text-white font-bold bg-black bg-opacity-50 hover:bg-opacity-75 transition-opacity duration-300 z-50 opacity-0 group-hover:opacity-100"
+              className="absolute inset-0 flex items-center justify-center text-white font-bold bg-black bg-opacity-50 hover:bg-opacity-75 transition-opacity duration-300 z-50 opacity-0 group-hover:opacity-100 rounded-lg"
             >
               More Info
             </button>
@@ -78,7 +78,7 @@ const BookList = ({ books }) => {
                   </p>
 
                   {/* Book Description */}
-                  <div className="text-sm mt-2 max-h-48 overflow-y-auto">
+                  <div className="text-sm mt-2 max-h-48 overflow-y-auto more-info-modal">
                     {book.volumeInfo.description
                       ? book.volumeInfo.description
                       : "No description available"}
@@ -87,7 +87,7 @@ const BookList = ({ books }) => {
                   {/* Close Button */}
                   <button
                     onClick={() => setSelectedBookId(null)}
-                    className="absolute top-2 right-2 text-sm text-[#9B2D2D]  underline"
+                    className="absolute top-2 right-2  text-lg md:text-sm text-[#9B2D2D]  underline"
                   >
                     Close
                   </button>

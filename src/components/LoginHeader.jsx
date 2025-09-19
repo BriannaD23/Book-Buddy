@@ -76,7 +76,7 @@ const HeaderLoggedIn = () => {
   }, []);
   return (
     <>
-      <header className="bg-[#EAD298] relative text-white px-2 py-2 md:px-4 md:py-2 relative ">
+      <header className="bg-[#EAD298] relative text-white px-2 py-2 md:px-4 md:py-4 relative ">
         <div className="flex justify-between items-center  w-full">
           <div className=" md:hidden flex-shrink-0 mt-2">
             {/* Mobile Hamburger - left */}
@@ -143,7 +143,7 @@ const HeaderLoggedIn = () => {
               <div className="mb-4">
                 <button
                       onClick={() =>  setIsDropdownOpen(false)} // or your close handler
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 "
+                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700  z-50"
                       aria-label="Close"
                     >
                       <FontAwesomeIcon icon={faTimes} size="lg" />
@@ -152,7 +152,7 @@ const HeaderLoggedIn = () => {
                   <li>
                    
                     <button
-                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                      className="block w-full text-left px-4 py-2  text-lg md:text-sm hover:bg-gray-200"
                       onClick={() => setIsModalOpen(true)}
                     >
                       My Profile
@@ -161,7 +161,7 @@ const HeaderLoggedIn = () => {
                   <li>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                      className="block w-full text-left px-4 py-2 text-lg md:text-sm hover:bg-gray-200"
                     >
                       Logout
                     </button>
@@ -174,8 +174,16 @@ const HeaderLoggedIn = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md z-50">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md z-50 text-lg">
             <ul className="flex flex-col gap-2 p-4">
+
+            <button
+                      onClick={() =>  setIsMobileMenuOpen(false)} // or your close handler
+                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 "
+                      aria-label="Close"
+                    >
+                      <FontAwesomeIcon icon={faTimes} size="lg" />
+                    </button>
               <li>
                 <Link
                   to="/logedin-home"
