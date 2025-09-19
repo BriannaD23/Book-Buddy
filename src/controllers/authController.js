@@ -4,7 +4,8 @@ import path from "path";
 import { generateToken } from "../utils/jwtUtils.js";
 
 
-const serviceAccount = path.resolve("service-key.json");
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+
 
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(serviceAccount),
