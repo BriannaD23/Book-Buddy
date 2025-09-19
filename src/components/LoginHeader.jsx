@@ -137,12 +137,10 @@ const HeaderLoggedIn = () => {
 
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 bg-white text-black rounded  rounded-tr-none shadow-lg w-40 z-5 ">
-
                 <ul>
-
-              <div className="mb-4">
-                <button
-                      onClick={() =>  setIsDropdownOpen(false)} // or your close handler
+                  <div className="mb-4">
+                    <button
+                      onClick={() => setIsDropdownOpen(false)} // or your close handler
                       className="absolute top-2 right-2 text-gray-500 hover:text-gray-700  z-50"
                       aria-label="Close"
                     >
@@ -150,7 +148,6 @@ const HeaderLoggedIn = () => {
                     </button>
                   </div>
                   <li>
-                   
                     <button
                       className="block w-full text-left px-4 py-2  text-lg md:text-sm hover:bg-gray-200"
                       onClick={() => setIsModalOpen(true)}
@@ -176,14 +173,13 @@ const HeaderLoggedIn = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md z-50 text-lg">
             <ul className="flex flex-col gap-2 p-4">
-
-            <button
-                      onClick={() =>  setIsMobileMenuOpen(false)} // or your close handler
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 "
-                      aria-label="Close"
-                    >
-                      <FontAwesomeIcon icon={faTimes} size="lg" />
-                    </button>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)} // or your close handler
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 "
+                aria-label="Close"
+              >
+                <FontAwesomeIcon icon={faTimes} size="lg" />
+              </button>
               <li>
                 <Link
                   to="/logedin-home"

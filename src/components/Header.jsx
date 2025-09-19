@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaUserCircle } from "react-icons/fa";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Logo from "../assets/images/bookbuddy.png";
 
 const Header = ({ isLoggedIn }) => {
@@ -8,7 +10,7 @@ const Header = ({ isLoggedIn }) => {
 
   return (
     <>
-      <header className="bg-[#EAD298] relative text-white px-9 py-2 md:px-4 md:py-4">
+      <header className="bg-[#EAD298] relative text-white px-2 py-2 md:px-4 md:py-4 relative ">
         <div className="flex justify-between items-center w-full">
           {/* Mobile Hamburger - Left */}
           <div className="md:hidden flex-shrink-0 mt-2">
@@ -51,17 +53,26 @@ const Header = ({ isLoggedIn }) => {
               ) : (
                 <ul className="flex gap-4 text-white text-lg">
                   <li>
-                    <Link to="/home" className="text-[#A83D3D] hover:text-yellow-400">
+                    <Link
+                      to="/home"
+                      className="text-[#A83D3D] hover:text-yellow-400"
+                    >
                       Home
                     </Link>
                   </li>
                   <li>
-                    <Link to="/" className="text-[#A83D3D] hover:text-yellow-400">
+                    <Link
+                      to="/"
+                      className="text-[#A83D3D] hover:text-yellow-400"
+                    >
                       Login
                     </Link>
                   </li>
                   <li>
-                    <Link to="/registration" className="text-[#A83D3D] hover:text-yellow-400">
+                    <Link
+                      to="/registration"
+                      className="text-[#A83D3D] hover:text-yellow-400"
+                    >
                       Register
                     </Link>
                   </li>
@@ -107,6 +118,13 @@ const Header = ({ isLoggedIn }) => {
                 </>
               ) : (
                 <>
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)} // or your close handler
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700  z-50"
+                    aria-label="Close"
+                  >
+                    <FontAwesomeIcon icon={faTimes} size="lg" />
+                  </button>
                   <li>
                     <Link
                       to="/home"
