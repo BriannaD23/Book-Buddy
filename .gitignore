@@ -25,4 +25,4 @@ dist-ssr
 
 .env
 service-key.json
-firebaseConfig.js
+
