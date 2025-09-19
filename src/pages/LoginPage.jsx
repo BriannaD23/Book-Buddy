@@ -58,6 +58,7 @@ const Login = () => {
     setError("");
 
     try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${backendUrl}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -76,6 +77,7 @@ const Login = () => {
       }
     } catch (error) {
       setError("Login failed: " + error.message);
+      console.log(error.message)
     } finally {
       setLoading(false);
     }
