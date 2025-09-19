@@ -16,6 +16,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
   const handleGoogleRegister = async (e) => {
     e.preventDefault();
@@ -27,8 +29,10 @@ const Register = () => {
       const user = result.user;
 
       const token = await user.getIdToken();
+    
 
-      const response = await fetch("http://localhost:5001/api/auth/google", {
+
+      const response = await fetch(`${backendUrl}/api/auth/google`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +64,7 @@ const Register = () => {
     }
   
     try {
-      const response = await fetch("http://localhost:5001/api/auth/register", {
+      const response = await fetch(`${backendUrl}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

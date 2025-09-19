@@ -21,6 +21,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
 
+ 
   const handleGoogleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -28,8 +29,9 @@ const Login = () => {
       const user = result.user;
 
       const token = await user.getIdToken();
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-      const response = await fetch("http://localhost:5001/api/auth/google", {
+      const response = await fetch(`${backendUrl}/api/auth/google`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +58,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5001/api/auth/login", {
+      const response = await fetch(`${backendUrl}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

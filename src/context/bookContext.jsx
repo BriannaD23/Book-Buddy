@@ -29,13 +29,15 @@ export const BooksProvider = ({ children }) => {
   };
 
   const addBook = async (book) => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     if (!userId) {
       console.error("User ID is not available");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:5001/api/books", {
+      const response = await fetch(`${backendUrl}/api/books`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,5 +1,9 @@
 import { decodeTokenPayload } from "../utils/cookieUtils.js";
-const API_URL = "http://localhost:5001/api/users";
+
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const API_URL = `${backendUrl}/api/users`;
+
 
 export const getUserProfile = async () => {
   const decodedPayload = decodeTokenPayload();
