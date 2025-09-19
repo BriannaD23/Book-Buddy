@@ -16,7 +16,12 @@ import {
   deleteCompletedBooks,
 } from "../services/userLibrary.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faArrowLeft, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faArrowLeft,
+  faEdit,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
 const MyLibrary = () => {
   const [books, setBooks] = useState([]);
@@ -99,8 +104,6 @@ const MyLibrary = () => {
       });
     }
   }, [isEditing, currentBook]);
-
-
 
   const handleBookClick = (bookId) => {
     const book = books.find((b) => b._id === bookId);
@@ -320,20 +323,18 @@ const MyLibrary = () => {
     }
   };
 
-   
-  
   useEffect(() => {
-  const fetchGoal = async () => {
-    try {
-      const savedGoal = await getGoal(); // no userId passed
-      setGoal(savedGoal);
-    } catch (err) {
-      console.error("Failed to fetch goal:", err.message);
-    }
-  };
+    const fetchGoal = async () => {
+      try {
+        const savedGoal = await getGoal(); // no userId passed
+        setGoal(savedGoal);
+      } catch (err) {
+        console.error("Failed to fetch goal:", err.message);
+      }
+    };
 
-  fetchGoal();
-}, []);
+    fetchGoal();
+  }, []);
 
   const totalBooks = completedBooks.length + pendingBooks.length;
 
@@ -353,7 +354,6 @@ const MyLibrary = () => {
             {currentBook?.coverImage ? (
               <div className="relative group flex flex-col items-center">
                 <div className="relative group">
-
                   <img
                     src={currentBook.coverImage}
                     alt="Book Cover"
@@ -368,7 +368,6 @@ const MyLibrary = () => {
                     Delete Book
                   </button>
                 </div>
-              
 
                 {/* Book Title and Author */}
                 <div className="mt-2 text-center">
@@ -391,8 +390,7 @@ const MyLibrary = () => {
               onClick={() => setIsEditing(true)}
               className="bg-[#a83d3d] text-[#EAD298] px-4 py-2 rounded-lg"
             >
-                <FontAwesomeIcon icon={faEdit} />
-
+              <FontAwesomeIcon icon={faEdit} />
             </button>
             <button
               onClick={() => {
@@ -410,7 +408,7 @@ const MyLibrary = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96 max-w-full">
               <form onSubmit={handleSubmit} className="space-y-4">
-                <h2 className="text-2xl font-semibold text-center text-gray-800">
+                <h2 className="text-2xl font-semibold text-center text-[#9B2D2D]">
                   {bookDetails.title ? "Edit Book" : "Add Book"}
                 </h2>
 
@@ -495,14 +493,14 @@ const MyLibrary = () => {
                 <div className="flex justify-between">
                   <button
                     type="submit"
-                    className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                    className=" text-white px-6 py-2 bg-[#a83d3d] rounded-lg hover:bg-blue-600 transition-colors"
                   >
                     Save
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors"
+                    className=" bg-gray-200 text-[#A83D3D] px-6 py-2 rounded-lg hover:bg-gray-300 "
                   >
                     Cancel
                   </button>
@@ -557,7 +555,7 @@ const MyLibrary = () => {
                 textAnchor="middle"
                 fill="#9B2D2D"
                 dy=".3em"
-                className="font-semibold text-lg"
+                className="font-semibold text-2xl"
               >
                 {completedBooks.length > 0
                   ? `${completedBooks.length}/${goal}`
@@ -651,7 +649,7 @@ const MyLibrary = () => {
                 )}
                 <button
                   onClick={toggleModal}
-                  className="mt-4 text-[#9B2D2D] font-medium underline hover:text-[#3e8e41]"
+                  className="mt-4 bg-gray-200 text-[#A83D3D] text-1xl md:text-base py-2 px-4 rounded-lg hover:bg-gray-300"
                 >
                   Close
                 </button>
@@ -662,7 +660,9 @@ const MyLibrary = () => {
       </div>
 
       <div className="text-center mb-10">
-        <h2 className="text-2xl font-semibold mb-4">Pending Reads</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-[#9B2D2D]">
+          Pending Reads
+        </h2>
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-9 bg-white pointer-events-none z-40"></div>
 
@@ -701,13 +701,13 @@ const MyLibrary = () => {
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
                         <button
                           onClick={() => handlePendingBookClick(book._id)}
-                          className="bg-black bg-opacity-85 text-white p-3 rounded-full hover:bg-opacity-90 transition-opacity mx-2"
+                          className="bg-black bg-opacity-85 text-white  w-12 h-12 rounded-full hover:bg-opacity-90 transition-opacity mx-2"
                         >
                           Add
                         </button>
                         <button
                           onClick={() => handleDeletePendingBook(book._id)}
-                          className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition-opacity mx-2"
+                          className="bg-red-600 text-white  w-12 h-12 rounded-full hover:bg-red-700 transition-opacity mx-2"
                         >
                           🗑️
                         </button>
@@ -742,7 +742,7 @@ const MyLibrary = () => {
             />
           </button>
         </div>
-        
+
         {showPendingModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 ">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96 mx-5">
@@ -751,20 +751,20 @@ const MyLibrary = () => {
               <div className="mt-4">
                 <button
                   onClick={() => handleAddToCurrent(selectedBook._id)}
-                  className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
+                  className="bg-[#A83D3D] text-[#EAD298] text-2xl  md:text-base  py-2 px-4 rounded-lg hover:bg-[#1e3f1e]"
                 >
-                  Add to Current
+                  Current
                 </button>
                 <button
                   onClick={() => handleAddToCompleteMyLibrary(selectedBook._id)}
-                  className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 ml-4"
+                  className="border border-[#A83D3D] text-[#A83D3D]  text-2xl  md:text-base   bg-white py-2 px-4 rounded-lg hover:bg-[#EAD298] ml-4"
                 >
-                  Add to Complete
+                  Complete
                 </button>
               </div>
               <button
                 onClick={() => setShowPendingModal(false)}
-                className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
+                className="mt-4 bg-gray-200 text-[#A83D3D] text-1xl md:text-base py-2 px-4 rounded-lg hover:bg-gray-300"
               >
                 Close
               </button>
@@ -777,7 +777,7 @@ const MyLibrary = () => {
 
       {/* My Books Section-------------------------------- */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold mb-5 flex justify-center items-center">
+        <h1 className="text-3xl font-bold mb-5 flex justify-center items-center text-[#9B2D2D]">
           My Books
         </h1>
         {loading ? (
@@ -825,13 +825,13 @@ const MyLibrary = () => {
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
                           <button
                             onClick={() => handleBookClick(book._id)}
-                            className="bg-black bg-opacity-85 text-white p-3 rounded-full hover:bg-opacity-90 transition-opacity mx-2"
+                            className="bg-black bg-opacity-85 text-white  w-12 h-12 rounded-full hover:bg-opacity-90 transition-opacity mx-2"
                           >
                             Add
                           </button>
                           <button
                             onClick={() => handleDeleteMyLibraryBook(book._id)}
-                            className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition-opacity mx-2"
+                            className="bg-red-600 text-white w-12 h-12  rounded-full hover:bg-red-700 transition-opacity mx-2"
                           >
                             🗑️
                           </button>
@@ -867,34 +867,34 @@ const MyLibrary = () => {
         )}
       </div>
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
+          <div className="bg-white p-6 rounded-lg  shadow-lg w-96">
             <h2 className="text-2xl mb-4 text-[#9B2D2D] ">Add book to list</h2>
             <p>Would you like to add this book to your list?</p>
             <div className="mt-4">
               <button
-                onClick={() => handleAddToCurrent(selectedBook._id)} // Placeholder action
-                className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
+                onClick={() => handleAddToCurrent(selectedBook._id)}
+                className="bg-[#A83D3D] text-[#EAD298] text-2xl  md:text-base  py-2 px-4 rounded-lg hover:bg-[#1e3f1e]"
               >
-                Add to Current
+                Current
               </button>
               <button
                 onClick={() => handleAddToPending(selectedBook._id)} // Pass book.id for the book to be added
-                className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 ml-4"
+                className="border border-[#A83D3D] text-[#A83D3D]  text-2xl  md:text-base   bg-white py-2 px-4 rounded-lg hover:bg-[#EAD298] ml-4"
               >
-                Add to Pending
+                Pending
               </button>
 
               <button
                 onClick={() => handleAddToCompleteMyLibrary(selectedBook._id)}
-                className="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 ml-4"
+                className="bg-[#EAD298] text-[#A83D3D] mt-4 py-2  text-2xl md:text-base px-4 rounded-lg hover:bg-yellow-600 ml-4"
               >
-                Add to Completed
+                Completed
               </button>
             </div>
             <button
               onClick={() => setShowModal(false)}
-              className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
+              className="mt-4 bg-gray-200 text-[#A83D3D] text-1xl md:text-base py-2 px-4 rounded-lg hover:bg-gray-300"
             >
               Close
             </button>

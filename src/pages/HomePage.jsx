@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BookList from "../components/Booklist.jsx";
 import HomeLayout from "../components/HomeLayout.jsx";
-
+import ChatBubble from "../components/ChatBubble.jsx";
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,11 +47,18 @@ const Home = () => {
   };
 
   return (
-    <HomeLayout searchQuery={searchQuery} handleSearchChange={handleSearchChange}>
+    <HomeLayout
+      searchQuery={searchQuery}
+      handleSearchChange={handleSearchChange}
+    >
       <div className="mt-8">
         <h1 className="text-2xl text-[#A83D3D] mb-4 text-center">
           Recommended Books
         </h1>
+
+        {/* <div>
+          <ChatBubble />
+        </div> */}
 
         {loading ? (
           <p className="text-[#A83D3D] text-center">Loading...</p>
@@ -82,12 +89,8 @@ const Home = () => {
           </div>
         )}
       </div>
-     
     </HomeLayout>
   );
 };
 
 export default Home;
-
-
-

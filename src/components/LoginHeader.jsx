@@ -100,7 +100,7 @@ const HeaderLoggedIn = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center ml-auto justify-between ">
-            <ul className="flex gap-12 text-white text-lg ml-auto ">
+            <ul className="flex gap-12 text-[#9B2D2D] text-lg ml-auto ">
               <li>
                 <Link to="/logedin-home" className="hover:text-[#9B2D2D]">
                   Home
