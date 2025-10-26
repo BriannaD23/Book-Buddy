@@ -107,7 +107,7 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="input-text w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
           <div className="mb-4">
@@ -122,7 +122,7 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="input-text w-full p-2 border border-gray-300 rounded-md"
             />
             <FontAwesomeIcon
                 icon={passwordVisible ? faEyeSlash : faEye} 
@@ -143,7 +143,7 @@ const Register = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm your password"
                 required
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="input-text w-full p-2 border border-gray-300 rounded-md"
               />
               <FontAwesomeIcon
                 icon={passwordVisible ? faEyeSlash : faEye}
