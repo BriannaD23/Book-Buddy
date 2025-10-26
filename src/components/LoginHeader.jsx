@@ -222,7 +222,7 @@ const HeaderLoggedIn = () => {
           <div className="bg-white p-6 rounded-lg w-80">
             <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
 
-            <div className="flex flex-col items-center mb-4  mr-10">
+            <div className="flex flex-col items-center mb-4">
               <img
                 src={tempProfilePic}
                 alt="Profile"
