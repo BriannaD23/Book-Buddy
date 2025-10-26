@@ -570,8 +570,8 @@ const MyLibrary = () => {
             </label>
             <input
               type="number"
-              value={goal}
-              onChange={(e) => setGoal(Number(e.target.value))}
+              value={goal === 0 ? "" : goal}
+              onChange={(e) => setGoal(Number(e.target.value) || 0)}
               className="border p-1 rounded w-20 text-center"
               min="0"
             />
