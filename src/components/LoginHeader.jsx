@@ -233,7 +233,7 @@ const HeaderLoggedIn = () => {
                 className="w-40 h-40 rounded-full mb-2 object-cover"
               />
 
-              <label className="cursor-pointer text-blue-500 mb-2">
+              <label className="cursor-pointer text-[#A83D3D] mb-2">
                 Change Profile Pic
                 <input
                   type="file"
@@ -254,7 +254,7 @@ const HeaderLoggedIn = () => {
 
             <div className="flex justify-end gap-2">
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-[#A83D3D] text-white px-4 py-2 rounded"
                 onClick={() => {
                   saveProfile();
                   saveName();
