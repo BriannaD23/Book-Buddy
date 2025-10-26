@@ -1,5 +1,6 @@
 
 import User from "../models/userModel.js";
+import bcrypt from "bcrypt";
 import { generateToken } from "../utils/jwtUtils.js"
 
 
@@ -12,8 +13,10 @@ export const registerWithEmail = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
-
-    const newUser = new User({ email, password }); 
+    
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+    const newUser = new User({ email, password:hashedPassword}); 
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully", user: newUser });
@@ -34,8 +37,8 @@ export const loginWithEmail = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordValid = password === user.password; 
-
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }

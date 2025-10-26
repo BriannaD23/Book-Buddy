@@ -131,7 +131,7 @@ const HeaderLoggedIn = () => {
               <img
                 src={user?.photoURL || Usericon}
                 alt="Profile"
-                className="w-10 h-10   rounded-full object-cover border-2 border-black"
+                className="w-10 h-10 rounded-full object-cover border-2 border-black"
               />
             </button>
 
@@ -140,7 +140,7 @@ const HeaderLoggedIn = () => {
                 <ul>
                   <div className="mb-4">
                     <button
-                      onClick={() => setIsDropdownOpen(false)} // or your close handler
+                      onClick={() => setIsDropdownOpen(false)}
                       className="absolute top-2 right-2 text-gray-500 hover:text-gray-700  z-50"
                       aria-label="Close"
                     >
@@ -219,10 +219,16 @@ const HeaderLoggedIn = () => {
             <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
 
             <div className="flex flex-col items-center mb-4  mr-10">
-              <img
+              {/* <img
                 src={tempProfilePic}
                 alt="Profile"
                 className="w-40 h-40 rounded-full mb-2 object-cover"
+              /> */}
+              <img
+                src={user?.photoURL ? user.photoURL : Usericon}
+                onError={(e) => (e.currentTarget.src = Usericon)}
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover border-2 border-black"
               />
               <label className="cursor-pointer text-blue-500 mb-2">
                 Change Profile Pic
