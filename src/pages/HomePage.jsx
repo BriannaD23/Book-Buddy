@@ -11,9 +11,9 @@ const Home = () => {
   const resultsPerPage = 16;
   const defaultCategory = "Fiction";
 
-  const fetchBooks = async () => {
+  const fetchBooks = async (query) => {
     setLoading(true);
-    const query = searchQuery || defaultCategory;
+    const q = query || defaultCategory;
     try {
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${resultsPerPage}&orderBy=relevance`
@@ -29,13 +29,12 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setBooks([]);
-    fetchBooks();
-  }, [searchQuery, startIndex]);
+    fetchBooks(defaultCategory);
+  }, [startIndex]);
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-    setStartIndex(0);
+  const handleSearchClick = (query) => {
+    setStartIndex(0); // reset pagination
+    fetchBooks(query); // fetch only on click
   };
 
   const handleNextPage = () => {
@@ -47,10 +46,7 @@ const Home = () => {
   };
 
   return (
-    <HomeLayout
-      searchQuery={searchQuery}
-      handleSearchChange={handleSearchChange}
-    >
+    <HomeLayout handleSearchClick={handleSearchClick}>
       <div className="mt-8">
         <h1 className="text-2xl text-[#A83D3D] mb-4 text-center">
           Recommended Books
