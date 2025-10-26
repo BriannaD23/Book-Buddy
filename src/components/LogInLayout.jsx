@@ -24,7 +24,7 @@ const CommonLayout = ({ children, handleSearchClick }) => {
                 <input
                   type="text"
                   placeholder="Search for books..."
-                  className="p-2 flex-grow text-black rounded-md pr-10"
+                  className="input-text p-2 flex-grow text-black rounded-md pr-10"
                   value={localQuery}
                   onChange={(e) => setLocalQuery(e.target.value)}
                 />
