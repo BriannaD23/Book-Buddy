@@ -52,10 +52,7 @@ const Home = () => {
           Recommended Books
         </h1>
 
-        {/* <div>
-          <ChatBubble />
-        </div> */}
-
+      
         {loading ? (
           <p className="text-[#A83D3D] text-center">Loading...</p>
         ) : books.length > 0 ? (

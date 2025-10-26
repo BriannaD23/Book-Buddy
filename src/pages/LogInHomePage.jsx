@@ -36,8 +36,8 @@ const LoginHome = () => {
   }, [startIndex]);
 
    const handleSearchClick = (query) => {
-    setStartIndex(0); // reset pagination
-    fetchBooks(query); // fetch only on click
+    setStartIndex(0); 
+    fetchBooks(query); 
   };
 
   const handleNextPage = () => {
