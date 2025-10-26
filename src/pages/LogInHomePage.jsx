@@ -13,13 +13,12 @@ const LoginHome = () => {
   const resultsPerPage = 16;
   const defaultCategory = "Fiction";
 
-  const fetchBooks = async () => {
+    const fetchBooks = async (query) => {
     setLoading(true);
-    const query = searchQuery || defaultCategory;
-    const apiKey = import.meta.env.VITE_API_KEY;
+    const q = query || defaultCategory;
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${resultsPerPage}&orderBy=relevance&key=${apiKey}`
+        `https://www.googleapis.com/books/v1/volumes?q=${query}&startIndex=${startIndex}&maxResults=${resultsPerPage}&orderBy=relevance`
       );
       const data = await response.json();
       setBooks(data.items || []);
@@ -31,14 +30,14 @@ const LoginHome = () => {
     }
   };
 
-  useEffect(() => {
-    setBooks([]);  
-    fetchBooks();
-  }, [searchQuery, startIndex]);
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-    setStartIndex(0);
+  useEffect(() => {
+      fetchBooks(defaultCategory);
+  }, [startIndex]);
+
+   const handleSearchClick = (query) => {
+    setStartIndex(0); // reset pagination
+    fetchBooks(query); // fetch only on click
   };
 
   const handleNextPage = () => {
@@ -50,7 +49,7 @@ const LoginHome = () => {
   };
 
   return (
-    <LogInLayout searchQuery={searchQuery} handleSearchChange={handleSearchChange}>
+    <LogInLayout handleSearchClick={handleSearchClick}>
       <div className="mt-8">
         <h1 className="text-[#A83D3D] text-2xl  mb-4 text-center">
           Recommended Books

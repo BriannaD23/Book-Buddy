@@ -1,8 +1,10 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from "react";
 
-const CommonLayout = ({ children, searchQuery, handleSearchChange }) => {
+
+const CommonLayout = ({ children, handleSearchClick }) => {
+  const [localQuery, setLocalQuery] = useState("");
   return (
     <div>
       <div className="h-144">
@@ -23,12 +25,13 @@ const CommonLayout = ({ children, searchQuery, handleSearchChange }) => {
                   type="text"
                   placeholder="Search for books..."
                   className="p-2 flex-grow text-black rounded-md pr-10"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
+                  value={localQuery}
+                  onChange={(e) => setLocalQuery(e.target.value)}
                 />
                 <FontAwesomeIcon
                   icon={faMagnifyingGlass}
-                  className="text-gray-800 text-xl absolute right-3 pointer-events-none"
+                  className="text-gray-800 text-xl absolute right-3"
+                  onClick={() => handleSearchClick(localQuery)} 
                 />
               </div>
             </div>
